@@ -9,6 +9,8 @@ import io.netty.handler.codec.http.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 import static com.sun.deploy.net.HttpRequest.CONTENT_LENGTH;
 import static com.sun.deploy.net.HttpRequest.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -25,27 +27,26 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
-        System.out.println(ctx);
-        System.out.println(msg);
          HttpRequest request ;
          FullHttpResponse response ;
         if (msg instanceof HttpRequest) {
-            log.info("http");
             request = (HttpRequest) msg;
             String uri = request.uri();
+            log.info(uri);
             String res = "";
              response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(res.getBytes("UTF-8")));
             ctx.write(response);
         }
 
         if (msg instanceof HttpContent) {
-            log.info("msg");
             HttpContent content = (HttpContent) msg;
             ByteBuf buf = content.content();
             System.out.println(buf.toString(io.netty.util.CharsetUtil.UTF_8));
             buf.release();
 
-            String res = "I am OK";
+            int random=new Random().nextInt(1000);
+            log.info(random+"");
+            String res = "I am OK"+random;
              response = new DefaultFullHttpResponse(HTTP_1_1,
                      HttpResponseStatus.OK, Unpooled.wrappedBuffer(res.getBytes("UTF-8")));
             response.headers().set(CONTENT_TYPE, "text/plain");
