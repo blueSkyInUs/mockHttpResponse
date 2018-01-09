@@ -1,5 +1,6 @@
 package com.hello.netty;
 
+import com.hello.handle.RequestHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
@@ -7,8 +8,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.URL;
+import java.util.List;
 import java.util.Random;
 
 import static com.sun.deploy.net.HttpRequest.CONTENT_LENGTH;
@@ -23,6 +27,8 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 @Component
 @ChannelHandler.Sharable
 public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
+    @Autowired
+    private List<RequestHandler> requestHandlers;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
@@ -32,21 +38,15 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof HttpRequest) {
             request = (HttpRequest) msg;
             String uri = request.uri();
-            log.info(uri);
-            String res = "";
-             response = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(res.getBytes("UTF-8")));
+            response=requestHandlers.stream().filter(requestHandler -> requestHandler.accept(uri)).findFirst().get().handle(request);
             ctx.write(response);
         }
 
         if (msg instanceof HttpContent) {
             HttpContent content = (HttpContent) msg;
             ByteBuf buf = content.content();
-            System.out.println(buf.toString(io.netty.util.CharsetUtil.UTF_8));
             buf.release();
-
-            int random=new Random().nextInt(1000);
-            log.info(random+"");
-            String res = "I am OK"+random;
+            String res = "I am OK";
              response = new DefaultFullHttpResponse(HTTP_1_1,
                      HttpResponseStatus.OK, Unpooled.wrappedBuffer(res.getBytes("UTF-8")));
             response.headers().set(CONTENT_TYPE, "text/plain");
