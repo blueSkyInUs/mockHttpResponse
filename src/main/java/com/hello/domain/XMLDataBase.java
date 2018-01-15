@@ -1,8 +1,15 @@
 package com.hello.domain;
 
 import lombok.Data;
+import lombok.SneakyThrows;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.*;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,6 +18,29 @@ import java.util.List;
  */
 @XmlRootElement
 @Data
+@XmlAccessorType(XmlAccessType.NONE)
 public class XMLDataBase {
-    List<RequestMetaInfo> requestMetaInfos;
+    @XmlElementWrapper(name="requestMetaInfos")
+    @XmlElement(name = "requestMetaInfo")
+    List<RequestMetaInfo> requestMetaInfos=new ArrayList<>();
+
+
+    @SneakyThrows
+    public static void main(String[] args) {
+        JAXBContext context = JAXBContext.newInstance(XMLDataBase.class);
+        Marshaller marshaller = context.createMarshaller();
+        StringWriter stringWriter=new StringWriter();
+        XMLDataBase xmlDataBase=new XMLDataBase();
+        xmlDataBase.getRequestMetaInfos().add(new RequestMetaInfo());
+        xmlDataBase.getRequestMetaInfos().add(new RequestMetaInfo());
+        marshaller.marshal(xmlDataBase,stringWriter);
+        System.out.println(stringWriter.getBuffer().toString());
+
+        Unmarshaller unmarshaller=context.createUnmarshaller();
+        XMLDataBase origin= (XMLDataBase) unmarshaller.unmarshal(new StringReader(stringWriter.getBuffer().toString()));
+        System.out.println(origin.getRequestMetaInfos().size());
+
+
+    }
+
 }
