@@ -60,7 +60,7 @@ public class RequestMetaController implements  BizController {
     private String addResource(HttpRequest request) {
         Map<String,String>  map= requestParamsUtil.findAllRequestParams(request);
 
-
+        return null;
     }
 
     private String getResource(HttpRequest request) {
