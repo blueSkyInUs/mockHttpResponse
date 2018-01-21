@@ -2,6 +2,7 @@ package com.hello.netty;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,11 @@ public class HttpChannelInitService extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel sc)
             throws Exception {
-        sc.pipeline().addLast(new HttpResponseEncoder());
-
         sc.pipeline().addLast(new HttpRequestDecoder());
-
+        sc.pipeline().addLast(new HttpResponseEncoder());
+        sc.pipeline().addLast(new HttpObjectAggregator(1048576));
         sc.pipeline().addLast(httpChannelHandler);
+
     }
 
 }

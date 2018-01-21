@@ -32,9 +32,6 @@ public class RequestMetaController implements  BizController {
     @Autowired
     private RequestMetaInfoConverter requestMetaInfoConverter;
 
-    private ThreadLocal<ResponseType> responseTypeThreadLocal=new ThreadLocal<>();
-
-
 
     public String showMyAcceptUrl(){
         return ACCEPT_URL_PREFIX;
@@ -58,29 +55,25 @@ public class RequestMetaController implements  BizController {
      * @param request
      */
     private ResponseResult<String> deleteResource(HttpRequest request) {
-        responseTypeThreadLocal.set(ResponseType.NOTIFY);
         AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
         xmlDao.deleteById(adminUrlMetaInfo.getId());
-        return new ResponseResult<>(ResponseType.NOTIFY,"");
+        return new ResponseResult<>(ResponseType.NOTIFY,"success");
     }
 
     private ResponseResult<String> updateResource(HttpRequest request) {
-        responseTypeThreadLocal.set(ResponseType.NOTIFY);
         AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
         RequestMetaInfo requestMetaInfo=requestMetaInfoConverter.convertRequestMetaInfo(request);
         xmlDao.updateById(adminUrlMetaInfo.getId(),requestMetaInfo);
-        return new ResponseResult<>(ResponseType.NOTIFY,"");
+        return new ResponseResult<>(ResponseType.NOTIFY,"success");
     }
 
     private ResponseResult<String> addResource(HttpRequest request) {
-        responseTypeThreadLocal.set(ResponseType.NOTIFY);
         RequestMetaInfo requestMetaInfo=requestMetaInfoConverter.convertRequestMetaInfo(request);
         xmlDao.addMeta(requestMetaInfo);
-        return new ResponseResult<>(ResponseType.NOTIFY,"");
+        return new ResponseResult<>(ResponseType.NOTIFY,"success");
     }
 
     private ResponseResult<String> getResource(HttpRequest request) {
-        responseTypeThreadLocal.set(ResponseType.CONTENT);
         AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
         if (Objects.isNull(adminUrlMetaInfo.getId())){
             return new ResponseResult<>(ResponseType.CONTENT,JSONArray.toJSONString(xmlDao.showAllMetaInfo()));

@@ -1,0 +1,83 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/list.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.css"></link>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+
+   <ul class="list-group">
+       <button id="add" type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal" style="width:200px" >添加</button>
+       <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+           <div class="modal-dialog">
+               <div class="modal-content">
+                   <div class="modal-header">
+                       <h4 class="modal-title" id="myModalLabel">新增url模拟返回信息</h4>
+                       <span id="closeLeftUpper">X</span>
+                   </div>
+                   <form>
+                   <div class="modal-body">
+                           <div class="form-group">
+                               <label for="inputfile">地址:</label>
+                               <input type="text" name="url" >
+                           </div>
+                           <div class="form-group">
+                               <label for="inputfile">请求方式:</label>
+                               <select  name="httpMethod"  style="width:200px;" >
+                                   <option value="POST" >POST</option>
+                                   <option value="GET" >GET</option>
+                                   <option value="PUT" >PUT</option>
+                                   <option value="DELETE" >DELETE</option>
+                               </select>
+                           </div>
+                           <div class="form-group">
+                               <label for="inputfile">请求参数位置:</label>
+                               <select  name="requestContentType"  style="width:200px;" >
+                                   <option value="BODY" >BODY</option>
+                                   <option value="FORM" >FORM</option>
+                                   <option value="URL_ATTACH" >URL_ATTACH</option>
+                               </select>
+                           </div>
+                           <div class="form-group">
+                               <label for="inputfile">请求内容预处理脚本:</label>
+                               <input type="text" name="preRequestScript" >
+                           </div>
+                           <div class="form-group">
+                               <label for="inputfile">响应内容格式:</label>
+                               <select  name="responseContentType"  style="width:200px;" >
+                                   <option value="HTML">HTML</option>
+                                   <option value="STRING">STRING</option>
+                                   <option value="JSON_STRING">JSON_STRING</option>
+                                   <option value="XML">XML</option>
+                               </select>
+                           </div>
+                           <div class="form-group">
+                               <label for="inputfile">响应内容:</label>
+                               <input type="text" name="responseContent" >
+                           </div>
+                           <div class="form-group">
+                               <label for="inputfile">响应内容预处理脚本:</label>
+                               <input type="text" name="preResponseScript" >
+                           </div>
+                   </div>
+                   <div class="modal-footer">
+                       <button type="button" id="close" class="btn btn-default" data-dismiss="modal">关闭</button>
+                       <button type="button" id="doAdd" class="btn btn-primary">添加</button>
+                   </div>
+                   </form>
+               </div><!-- /.modal-content -->
+           </div><!-- /.modal -->
+       </div>
+
+
+       #foreach( $requestInfo in $requestMetaInfos)
+           <li class="list-group-item"><a href="$requestInfo.id"> $requestInfo.url</a></li>
+       #end
+   </ul>
+
+
+</body>
+</html>

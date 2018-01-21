@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.StampedLock;
 
@@ -36,6 +38,8 @@ public class XMLDao  {
     @PostConstruct
     @SneakyThrows
     public void init(){
+        urlSet.add("/admin");  //不允许第三方设置以这个开头的url
+        urlSet.add("/static");  //不允许第三方设置以这个开头的url
         Resource resource=new ClassPathResource("db.xml");
         JAXBContext context = JAXBContext.newInstance(XMLDataBase.class);
         Unmarshaller unmarshaller=context.createUnmarshaller();
@@ -68,11 +72,7 @@ public class XMLDao  {
                 recordUrl(requestMetaInfo);
                 requestMetaInfo.setId(nextIndex++);
                 getDB().add(requestMetaInfo);
-                JAXBContext context = JAXBContext.newInstance(XMLDataBase.class);
-                String path=this.getClass().getClassLoader().getResource("db.xml").getPath();
-                try(FileWriter fileWriter=new FileWriter(path)){
-                    context.createMarshaller().marshal(xmlDataBase,fileWriter);
-                }
+                persistDb();
             }finally {
                 if (stamp!=-1){
                     stampedLock.unlockWrite(stamp);
@@ -81,6 +81,14 @@ public class XMLDao  {
 
 
 
+    }
+
+    private void persistDb() throws JAXBException, IOException {
+        JAXBContext context = JAXBContext.newInstance(XMLDataBase.class);
+        String path=this.getClass().getClassLoader().getResource("db.xml").getPath();
+        try(FileWriter fileWriter=new FileWriter(path)){
+            context.createMarshaller().marshal(xmlDataBase,fileWriter);
+        }
     }
 
     public List<RequestMetaInfo> showAllMetaInfo(){
@@ -96,6 +104,7 @@ public class XMLDao  {
 
     }
 
+    @SneakyThrows
     public void deleteById(int id){
         long stamp=-1;
         try{
@@ -103,6 +112,7 @@ public class XMLDao  {
             List<RequestMetaInfo> requestMetaInfos= getDB();
             RequestMetaInfoLocation requestMetaInfoLocation=binaryFindById(id,0, getDB().size()-1);
             requestMetaInfos.set(requestMetaInfoLocation.getLocation(),null);  //TODO 用定时任务 定时去清理为null的对象
+            persistDb();
         }finally {
             if (stamp!=-1){
                 stampedLock.unlockWrite(stamp);
@@ -115,6 +125,7 @@ public class XMLDao  {
         return xmlDataBase.getRequestMetaInfos();
     }
 
+    @SneakyThrows
     public void updateById(int id,RequestMetaInfo requestMetaInfo){
 
         long stamp=-1;
@@ -123,6 +134,7 @@ public class XMLDao  {
             List<RequestMetaInfo> requestMetaInfos= getDB();
             RequestMetaInfoLocation requestMetaInfoLocation=binaryFindById(id,0, getDB().size()-1);
             requestMetaInfos.set(requestMetaInfoLocation.getLocation(),requestMetaInfo);
+            persistDb();
         }finally {
             if (stamp!=-1){
                 stampedLock.unlockWrite(stamp);
@@ -144,8 +156,6 @@ public class XMLDao  {
                 stampedLock.unlockRead(stamp);
             }
         }
-
-
     }
 
     private RequestMetaInfoLocation binaryFindById(int id, int beginIndex, int endIndex){
@@ -158,7 +168,7 @@ public class XMLDao  {
                 throw new RuntimeException("not find");
             }
         }
-        int midleIndex=(endIndex-beginIndex)>>1+1;
+        int midleIndex=(endIndex-beginIndex)>>1;
         RequestMetaInfo requestMetaInfo=requestMetaInfos.get(midleIndex);
         if (requestMetaInfo.getId()<id){
             return binaryFindById(id,midleIndex+1,endIndex);

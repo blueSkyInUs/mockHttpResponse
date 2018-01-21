@@ -14,16 +14,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(2)
 @Slf4j
-public class UserUrlHandler implements  UrlHandler {
+public class UserUrlHandler{
     @Autowired
     private XMLDao xmlDao;
 
-    @Override
-    public boolean accept(String urlTag) {
-        return !"admin".equals(urlTag);
-    }
-
-    @Override
     public String handle(HttpRequest request ) {
 
 

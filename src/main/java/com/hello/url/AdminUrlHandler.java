@@ -16,9 +16,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(1)
 @Slf4j
-public class AdminUrlHandler implements  UrlHandler {
+public class AdminUrlHandler{
 
-    private static final String ADMIN_PREFIX="admin";
 
     @Autowired
     private XMLDao xmlDao;
@@ -26,18 +25,13 @@ public class AdminUrlHandler implements  UrlHandler {
     @Autowired
     private ControllerManagerUtil controllerManagerUtil;
 
-    @Override
-    public boolean accept(String urlTag) {
-        return urlTag.contains("admin");
-    }
 
     /**
      *  rest 风格url
      * @param request
      */
-    @Override
     public String handle(HttpRequest request ) {
-        BizController bizController=controllerManagerUtil.findBizControllerByUrl(request.uri().replaceFirst("/"+ADMIN_PREFIX,""));
+        BizController bizController=controllerManagerUtil.findBizControllerByUrl(request.uri().replaceFirst("/admin",""));
         return bizController.render(request);
     }
 

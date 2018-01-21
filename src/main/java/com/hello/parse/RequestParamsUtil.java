@@ -2,6 +2,7 @@ package com.hello.parse;
 
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.Attribute;
+import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import lombok.SneakyThrows;
@@ -20,9 +21,8 @@ public class RequestParamsUtil {
     @SneakyThrows
     public Map<String,Object> findAllRequestParams(HttpRequest httpRequest){
         Map<String,Object> paramsMap= new HashMap<>();
-                HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(httpRequest);
+        HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(new DefaultHttpDataFactory(false), httpRequest);
         List<InterfaceHttpData> parmList = decoder.getBodyHttpDatas();
-
         for (InterfaceHttpData parm : parmList) {
             Attribute data = (Attribute) parm;
             //TODO 数组怎么处理

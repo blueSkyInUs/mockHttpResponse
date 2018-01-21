@@ -1,0 +1,82 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/detailInfo.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"></link>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+
+   <ul class="list-group">
+       <form>
+       #foreach( $requestInfo in $requestMetaInfos)
+           <input type="hidden" name="id" value="$requestInfo.id">
+           <li class="list-group-item">
+               <div class="form-group">
+                   <label for="inputfile">地址:</label>
+                   <input type="text" name="url" value="$!requestInfo.url">
+               </div>
+           </li>
+           <li class="list-group-item">
+               <div class="form-group">
+                   <label for="inputfile">请求方式:</label>
+                   <select  name="httpMethod" value="$requestInfo.httpMethod" style="width:200px;" >
+                       <option value="POST" #if($requestInfo.httpMethod=='POST')selected="selected" #end>POST</option>
+                       <option value="GET" #if($requestInfo.httpMethod=='GET')selected="selected" #end>GET</option>
+                       <option value="PUT" #if($requestInfo.httpMethod=='PUT')selected="selected" #end>PUT</option>
+                       <option value="DELETE" #if($requestInfo.httpMethod=='DELETE')selected="selected" #end>DELETE</option>
+                   </select>
+               </div>
+
+           </li>
+           <li class="list-group-item">
+               <div class="form-group">
+                   <label for="inputfile">请求参数位置:</label>
+                   <select  name="requestContentType" value="$requestInfo.requestContentType" style="width:200px;" >
+                       <option value="BODY" #if($requestInfo.requestContentType=='BODY')selected="selected" #end>BODY</option>
+                       <option value="FORM" #if($requestInfo.requestContentType=='FORM')selected="selected" #end>FORM</option>
+                       <option value="URL_ATTACH" #if($requestInfo.requestContentType=='URL_ATTACH')selected="selected" #end>URL_ATTACH</option>
+                   </select>
+
+               </div>
+           </li>
+           <li class="list-group-item">
+               <div class="form-group">
+                   <label for="inputfile">请求内容预处理脚本:</label>
+                   <input type="text" name="preRequestScript" value="$!requestInfo.preRequestScript">
+               </div>
+           </li>
+           <li class="list-group-item">
+               <div class="form-group">
+                   <label for="inputfile">响应内容格式:</label>
+                   <select  name="responseContentType" value="$requestInfo.responseContentType" style="width:200px;" >
+                       <option value="HTML" #if($requestInfo.responseContentType=='HTML')selected="selected" #end>HTML</option>
+                       <option value="STRING" #if($requestInfo.responseContentType=='STRING')selected="selected" #end>STRING</option>
+                       <option value="JSON_STRING" #if($requestInfo.responseContentType=='JSON_STRING')selected="selected" #end>JSON_STRING</option>
+                       <option value="XML" #if($requestInfo.responseContentType=='XML')selected="selected" #end>XML</option>
+                   </select>
+               </div>
+           </li>
+           <li class="list-group-item">
+               <div class="form-group">
+                   <label for="inputfile">响应内容:</label>
+                   <input type="text" name="responseContent" value="$!requestInfo.responseContent">
+               </div>
+           </li>
+           <li class="list-group-item">
+               <div class="form-group">
+                   <label for="inputfile">响应内容预处理脚本:</label>
+                   <input type="text" name="preResponseScript" value="$!requestInfo.preResponseScript">
+               </div>
+           </li>
+           <li class="list-group-item">
+               <button id="modify" type="button" data-id="$requestInfo.id" disabled class="btn btn-default">修改</button>
+               <button id="delete" type="button" class="btn btn-default">删除</button>
+           </li>
+       #end
+       </form>
+   </ul>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.hello.url.request;
 
+import com.hello.util.UrlUniformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,9 @@ public class ControllerManagerUtil {
     @Autowired
     private List<BizController> bizControllers;
 
+    @Autowired
+    private UrlUniformer urlUniformer;
+
     Map<String,BizController> bizControllerMap=new HashMap<>();
 
     @PostConstruct
@@ -27,12 +31,12 @@ public class ControllerManagerUtil {
     }
 
     private void addBizController(BizController bizController){
-        String url=adjustUrl(bizController.showMyAcceptUrl());
+        String url=urlUniformer.adjustUrl(bizController.showMyAcceptUrl());
         bizControllerMap.put(url,bizController);
     }
 
     public BizController findBizControllerByUrl(String url){
-        url=adjustUrl(url);
+        url=urlUniformer.adjustUrl(url);
         BizController bizController=bizControllerMap.get(url);
         if (Objects.nonNull(bizController)){
             return bizController;
@@ -41,10 +45,5 @@ public class ControllerManagerUtil {
         return bizControllerMap.get(urlFamily+"/*");
     }
 
-    public String adjustUrl(String url){
-        if (!url.startsWith("/")){
-            return "/"+url;
-        }
-        return url;
-    }
+
 }

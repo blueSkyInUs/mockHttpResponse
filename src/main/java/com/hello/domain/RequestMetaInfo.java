@@ -20,7 +20,7 @@ public class RequestMetaInfo {
     private String preRequestScript; //支持javascript脚本对请求 做逻辑处理
     private RequestContentType requestContentType=RequestContentType.BODY;
     private String preResponseScript;//支持javascript脚本对响应 做逻辑处理
-    private ResponseContentType responseContentType;
+    private ResponseContentType responseContentType=ResponseContentType.STRING;
     private String responseContent;  //统一用字符存储 根据responseContentType作不同处理
 
     public void check(HttpRequest request) {

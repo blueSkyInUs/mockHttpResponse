@@ -1,30 +1,54 @@
 package com.hello.handle;
 
+import com.hello.util.UrlUniformer;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
-import org.springframework.core.annotation.Order;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
  * @author lesson
  * @date 2018/1/8 15:00
  */
 @Component
-@Order(2)
-public class StaticResourceHandle  implements  RequestHandler{
+public class StaticResourceHandle{
 
-    @Override
-    public boolean accept(String url) {
-        //说明动态请求资源控制器不支持 那么只能交由静态资源来处理
-        return true;
-    }
+    @Autowired
+    private UrlUniformer urlUniformer;
 
-    @Override
+    private LinkedHashMap<String,byte[]> staticContents=new LinkedHashMap<String,byte[]>(100){
+        @Override
+        protected boolean removeEldestEntry(Map.Entry eldest) {
+            if (size()>200){
+                return true;
+            }
+            return super.removeEldestEntry(eldest);
+        }
+    };
+
     public DefaultFullHttpResponse handle(HttpRequest request ) throws  Exception{
-                return  null;
+        String url=urlUniformer.adjustUrl(request.uri());
+        String resourcePath=url.substring(1);
+        byte[] content=staticContents.get(resourcePath);
+        if (Objects.isNull(content)){
+            ClassPathResource classPathResource=new ClassPathResource(resourcePath);
+            content=Files.readAllBytes(Paths.get(classPathResource.getURI()));
+            staticContents.put(resourcePath,content);
+        }
+        return new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(content));
+
+
     }
 
 }

@@ -1,6 +1,8 @@
 package com.hello.url.request;
 
 import com.alibaba.fastjson.JSONArray;
+import com.hello.domain.AdminUrlMetaInfo;
+import com.hello.parse.AdminUrlParser;
 import com.hello.result.ResponseResult;
 import com.hello.result.ResponseType;
 import io.netty.handler.codec.http.HttpRequest;
@@ -10,6 +12,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 
 import java.io.StringWriter;
+import java.util.Objects;
 
 public interface BizController {
      String showMyAcceptUrl();
@@ -24,7 +27,9 @@ public interface BizController {
           velocityEngine.setProperty(Velocity.RESOURCE_LOADER,"class");
           velocityEngine.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
           velocityEngine.init();
-          Template template=velocityEngine.getTemplate("template/requestMetaInfo.vm","utf-8");
+          AdminUrlMetaInfo adminUrlMetaInfo= AdminUrlParser.parse(httpRequest.uri());
+          String templateFile= Objects.isNull(adminUrlMetaInfo.getId())?"template/requestMetaInfoList.vm":"template/requestMetaInfoDetail.vm";
+          Template template=velocityEngine.getTemplate(templateFile,"utf-8");
           VelocityContext context = new VelocityContext();
           context.put("requestMetaInfos", JSONArray.parseArray(result.getData()));
           StringWriter stringWriter=new StringWriter();
