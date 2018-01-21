@@ -1,5 +1,6 @@
 package com.hello.domain;
 
+import com.hello.constant.HttpMethod;
 import lombok.Data;
 import lombok.SneakyThrows;
 
@@ -31,8 +32,11 @@ public class XMLDataBase {
         Marshaller marshaller = context.createMarshaller();
         StringWriter stringWriter=new StringWriter();
         XMLDataBase xmlDataBase=new XMLDataBase();
-        xmlDataBase.getRequestMetaInfos().add(new RequestMetaInfo());
-        xmlDataBase.getRequestMetaInfos().add(new RequestMetaInfo());
+        RequestMetaInfo requestMetaInfo=new RequestMetaInfo();
+        requestMetaInfo.setId(100);
+        requestMetaInfo.setHttpMethod(HttpMethod.GET);
+        requestMetaInfo.setUrl("/lesson");
+        xmlDataBase.getRequestMetaInfos().add(requestMetaInfo);
         marshaller.marshal(xmlDataBase,stringWriter);
         System.out.println(stringWriter.getBuffer().toString());
 

@@ -1,13 +1,16 @@
 package com.hello.handle;
 
+import com.hello.url.UrlHandler;
+import com.oracle.tools.packager.Log;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +23,9 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 @Component
 @Order(1)
 public class DynamicResourceHandle implements RequestHandler {
+
+    @Autowired
+    List<UrlHandler> urlHandlers;
     @Override
     public boolean accept(String url) {
         Pattern pattern = Pattern.compile(".+/(.+)\\?(.+)");
@@ -37,6 +43,10 @@ public class DynamicResourceHandle implements RequestHandler {
 
     @Override
     public DefaultFullHttpResponse handle(HttpRequest request) throws  Exception {
-           return new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("hello".getBytes("UTF-8")));
+
+       String response= urlHandlers.stream().filter(urlHandler -> urlHandler.accept(request.uri())).findFirst().get().handle(request);
+        Log.info(response);
+        return new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(response.getBytes("UTF-8")));
+
     }
 }

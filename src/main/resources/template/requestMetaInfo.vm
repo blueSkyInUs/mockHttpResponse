@@ -1,0 +1,17 @@
+<html>
+
+<head></head>
+<body>
+   <ul>
+       #foreach( $requestInfo in $requestMetaInfos)
+       <li>$requestInfo.id</li>
+           <li>$requestInfo.httpMethod</li>
+           <li>$!requestInfo.url</li>
+
+
+       #end
+   </ul>
+
+
+</body>
+</html>

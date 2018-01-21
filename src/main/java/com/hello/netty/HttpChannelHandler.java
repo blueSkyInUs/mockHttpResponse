@@ -11,9 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.net.URL;
 import java.util.List;
-import java.util.Random;
 
 import static com.sun.deploy.net.HttpRequest.CONTENT_LENGTH;
 import static com.sun.deploy.net.HttpRequest.CONTENT_TYPE;
@@ -68,7 +66,7 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
             throws Exception {
-        log.info("server exceptionCaught..");
+        log.error(cause.getMessage(),cause);
         ctx.close();
     }
 }

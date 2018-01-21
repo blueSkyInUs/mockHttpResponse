@@ -1,7 +1,6 @@
 package com.hello.url.request;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.hello.convert.RequestMetaInfoConverter;
 import com.hello.dao.XMLDao;
 import com.hello.domain.AdminUrlMetaInfo;
@@ -25,7 +24,7 @@ public class RequestMetaController implements  BizController {
 
     @Autowired
     private AdminUrlParser adminUrlParser;
-    private static final String ACCEPT_URL_PREFIX="requestmeta";
+    private static final String ACCEPT_URL_PREFIX="/requestmeta/*";
 
     @Autowired
     private XMLDao xmlDao;
@@ -86,7 +85,7 @@ public class RequestMetaController implements  BizController {
         if (Objects.isNull(adminUrlMetaInfo.getId())){
             return new ResponseResult<>(ResponseType.CONTENT,JSONArray.toJSONString(xmlDao.showAllMetaInfo()));
         }else {
-            return new ResponseResult<>(ResponseType.CONTENT,JSONObject.toJSONString(xmlDao.findById(adminUrlMetaInfo.getId())));
+            return new ResponseResult<>(ResponseType.CONTENT,JSONArray.toJSONString(xmlDao.findById(adminUrlMetaInfo.getId())));
         }
     }
 

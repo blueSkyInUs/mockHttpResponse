@@ -28,7 +28,7 @@ public class AdminUrlHandler implements  UrlHandler {
 
     @Override
     public boolean accept(String urlTag) {
-        return ADMIN_PREFIX.equals(urlTag);
+        return urlTag.contains("admin");
     }
 
     /**
@@ -36,11 +36,9 @@ public class AdminUrlHandler implements  UrlHandler {
      * @param request
      */
     @Override
-    public void handle(HttpRequest request ) {
+    public String handle(HttpRequest request ) {
         BizController bizController=controllerManagerUtil.findBizControllerByUrl(request.uri().replaceFirst("/"+ADMIN_PREFIX,""));
-        bizController.process(request);
-
-
+        return bizController.render(request);
     }
 
 

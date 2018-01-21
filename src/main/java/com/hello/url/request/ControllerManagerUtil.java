@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author lesson
@@ -17,7 +19,7 @@ public class ControllerManagerUtil {
     @Autowired
     private List<BizController> bizControllers;
 
-    Map<String,BizController> bizControllerMap;
+    Map<String,BizController> bizControllerMap=new HashMap<>();
 
     @PostConstruct
     public void init(){
@@ -25,10 +27,24 @@ public class ControllerManagerUtil {
     }
 
     private void addBizController(BizController bizController){
-        bizControllerMap.put(bizController.showMyAcceptUrl(),bizController);
+        String url=adjustUrl(bizController.showMyAcceptUrl());
+        bizControllerMap.put(url,bizController);
     }
 
     public BizController findBizControllerByUrl(String url){
-        return bizControllerMap.get(url);
+        url=adjustUrl(url);
+        BizController bizController=bizControllerMap.get(url);
+        if (Objects.nonNull(bizController)){
+            return bizController;
+        }
+        String urlFamily=url.substring(0,url.indexOf("/",1));
+        return bizControllerMap.get(urlFamily+"/*");
+    }
+
+    public String adjustUrl(String url){
+        if (!url.startsWith("/")){
+            return "/"+url;
+        }
+        return url;
     }
 }

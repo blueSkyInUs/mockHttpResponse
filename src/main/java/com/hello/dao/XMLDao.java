@@ -13,10 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.FileWriter;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.StampedLock;
 
 /**
@@ -135,11 +132,13 @@ public class XMLDao  {
 
     }
 
-    public RequestMetaInfo findById(int id){
+    public List<RequestMetaInfo> findById(int id){
         long stamp=-1;
         try{
             stamp=stampedLock.readLock();
-            return binaryFindById(id,0,getDB().size()-1).getRequestMetaInfo();
+            List<RequestMetaInfo> requestMetaInfos=new ArrayList<>();
+            requestMetaInfos.add( binaryFindById(id,0,getDB().size()-1).getRequestMetaInfo());
+            return requestMetaInfos;
         }finally {
             if (stamp!=-1){
                 stampedLock.unlockRead(stamp);

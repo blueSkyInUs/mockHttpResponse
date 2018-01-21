@@ -8,5 +8,5 @@ import io.netty.handler.codec.http.HttpRequest;
  */
 public interface UrlHandler {
     boolean accept(String urlTag);
-    void handle(HttpRequest request );
+    String handle(HttpRequest request );
 }

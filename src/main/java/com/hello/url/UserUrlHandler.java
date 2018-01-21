@@ -24,10 +24,10 @@ public class UserUrlHandler implements  UrlHandler {
     }
 
     @Override
-    public void handle(HttpRequest request ) {
+    public String handle(HttpRequest request ) {
 
 
-
+      return null;
 
     }
 
