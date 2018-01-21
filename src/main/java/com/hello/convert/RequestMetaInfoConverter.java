@@ -1,5 +1,6 @@
 package com.hello.convert;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hello.domain.RequestMetaInfo;
 import com.hello.parse.RequestParamsUtil;
 import io.netty.handler.codec.http.HttpRequest;
@@ -19,9 +20,7 @@ public class RequestMetaInfoConverter {
     private RequestParamsUtil requestParamsUtil;
 
     public RequestMetaInfo convertRequestMetaInfo(HttpRequest httpRequest){
-        Map<String,String> map= requestParamsUtil.findAllRequestParams(httpRequest);
-
-        return null;
-
+        Map<String,Object> map= requestParamsUtil.findAllRequestParams(httpRequest);
+        return JSONObject.parseObject(new JSONObject(map).toString(),RequestMetaInfo.class);
     }
 }

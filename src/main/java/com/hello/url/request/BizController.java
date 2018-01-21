@@ -1,8 +1,9 @@
 package com.hello.url.request;
 
+import com.hello.result.ResponseResult;
 import io.netty.handler.codec.http.HttpRequest;
 
 public interface BizController {
      String showMyAcceptUrl();
-     String process(HttpRequest request);
+     ResponseResult<String> process(HttpRequest request);
 }

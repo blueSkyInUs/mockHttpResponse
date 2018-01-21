@@ -1,15 +1,11 @@
 package com.hello.url;
 
 import com.hello.dao.XMLDao;
-import com.hello.domain.RequestMetaInfo;
-import com.hello.domain.XMLDataBase;
 import io.netty.handler.codec.http.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 /**
  * @author lesson
@@ -29,13 +25,7 @@ public class UserUrlHandler implements  UrlHandler {
 
     @Override
     public void handle(HttpRequest request ) {
-        String url=request.uri();
-        RequestMetaInfo requestMetaInfo=xmlDao.getRequestMetaInfoByUrl(url);
-        if (Objects.isNull(requestMetaInfo)){
-            log.info("url:{} no request MetaInfo find",url);
-            throw  new RuntimeException("url: "+url+"no request MetaInfo find");
-        }
-        requestMetaInfo.check(request);
+
 
 
 

@@ -2,18 +2,18 @@ package com.hello.url.request;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hello.convert.RequestMetaInfoConverter;
 import com.hello.dao.XMLDao;
 import com.hello.domain.AdminUrlMetaInfo;
 import com.hello.domain.RequestMetaInfo;
-import com.hello.domain.XMLDataBase;
 import com.hello.parse.AdminUrlParser;
-import com.hello.parse.RequestParamsUtil;
+import com.hello.result.ResponseResult;
+import com.hello.result.ResponseType;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -31,44 +31,62 @@ public class RequestMetaController implements  BizController {
     private XMLDao xmlDao;
 
     @Autowired
-    private RequestParamsUtil requestParamsUtil;
+    private RequestMetaInfoConverter requestMetaInfoConverter;
+
+    private ThreadLocal<ResponseType> responseTypeThreadLocal=new ThreadLocal<>();
+
+
 
     public String showMyAcceptUrl(){
         return ACCEPT_URL_PREFIX;
     }
 
     @Override
-    public String process(HttpRequest request) {
+    public ResponseResult<String> process(HttpRequest request) {
+
+        VelocityEngine velocityEngine=new VelocityEngine();
         switch(request.method().name()){
-            case "GET": getResource(request);break;
-            case "POST":addResource(request);break;
-            case "PUT":updateResource(request);break;
-            case "DELETE":deleteResource(request);break;
+            case "GET": return getResource(request);
+            case "POST":return addResource(request);
+            case "PUT":return updateResource(request);
+            case "DELETE":return deleteResource(request);
         }
-        return "";
-    }
-
-    private void deleteResource(HttpRequest request) {
-        AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
-
-    }
-
-    private void updateResource(HttpRequest request) {
-        AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
-    }
-
-    private String addResource(HttpRequest request) {
-        Map<String,String>  map= requestParamsUtil.findAllRequestParams(request);
-
         return null;
     }
 
-    private String getResource(HttpRequest request) {
+    /**
+     * 主要需求应该是列表和添加  那么用List就比map好一些
+     * @param request
+     */
+    private ResponseResult<String> deleteResource(HttpRequest request) {
+        responseTypeThreadLocal.set(ResponseType.NOTIFY);
+        AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
+        xmlDao.deleteById(adminUrlMetaInfo.getId());
+        return new ResponseResult<>(ResponseType.NOTIFY,"");
+    }
+
+    private ResponseResult<String> updateResource(HttpRequest request) {
+        responseTypeThreadLocal.set(ResponseType.NOTIFY);
+        AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
+        RequestMetaInfo requestMetaInfo=requestMetaInfoConverter.convertRequestMetaInfo(request);
+        xmlDao.updateById(adminUrlMetaInfo.getId(),requestMetaInfo);
+        return new ResponseResult<>(ResponseType.NOTIFY,"");
+    }
+
+    private ResponseResult<String> addResource(HttpRequest request) {
+        responseTypeThreadLocal.set(ResponseType.NOTIFY);
+        RequestMetaInfo requestMetaInfo=requestMetaInfoConverter.convertRequestMetaInfo(request);
+        xmlDao.addMeta(requestMetaInfo);
+        return new ResponseResult<>(ResponseType.NOTIFY,"");
+    }
+
+    private ResponseResult<String> getResource(HttpRequest request) {
+        responseTypeThreadLocal.set(ResponseType.CONTENT);
         AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
         if (Objects.isNull(adminUrlMetaInfo.getId())){
-            return JSONArray.toJSONString(xmlDao.showAllMetaInfo());
+            return new ResponseResult<>(ResponseType.CONTENT,JSONArray.toJSONString(xmlDao.showAllMetaInfo()));
         }else {
-            return JSONObject.toJSONString(xmlDao.getRequestMetaInfoByUrl(request.uri()));
+            return new ResponseResult<>(ResponseType.CONTENT,JSONObject.toJSONString(xmlDao.findById(adminUrlMetaInfo.getId())));
         }
     }
 

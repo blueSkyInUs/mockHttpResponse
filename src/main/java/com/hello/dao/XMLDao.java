@@ -1,8 +1,10 @@
 package com.hello.dao;
 
 import com.hello.domain.RequestMetaInfo;
+import com.hello.domain.RequestMetaInfoLocation;
 import com.hello.domain.XMLDataBase;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -11,24 +13,28 @@ import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.FileWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
+import java.util.concurrent.locks.StampedLock;
 
 /**
  * @author lesson
  * @date 2018/1/10 18:33
  */
 @Component
+@Slf4j
 public class XMLDao  {
 
-    private Map<String,RequestMetaInfo>  requestMetaInfoMap=new ConcurrentHashMap<>();
-
     private XMLDataBase xmlDataBase;
+
+    private Set<String> urlSet=new HashSet<>();
+
+    private volatile int nextIndex=1;
+
+    private StampedLock stampedLock=new StampedLock();
+
 
     @PostConstruct
     @SneakyThrows
@@ -37,17 +43,21 @@ public class XMLDao  {
         JAXBContext context = JAXBContext.newInstance(XMLDataBase.class);
         Unmarshaller unmarshaller=context.createUnmarshaller();
         xmlDataBase= (XMLDataBase) unmarshaller.unmarshal(resource.getInputStream());
-        requestMetaInfoMap.clear();
-        xmlDataBase.getRequestMetaInfos().stream().forEach(this::copyIntoMap);
+        List<RequestMetaInfo> requestMetaInfos= getDB();
+        requestMetaInfos.stream().forEach(this::recordUrl);
+        int size=requestMetaInfos.size();
+        if (size>0){
+            nextIndex=requestMetaInfos.get(size-1).getId()+1;
+        }
     }
 
-    private void copyIntoMap(RequestMetaInfo requestMetaInfo){
-        requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
+    private void recordUrl(RequestMetaInfo requestMetaInfo){
+        if (!urlSet.add(requestMetaInfo.getUrl())){
+            throw new RuntimeException("url:{"+requestMetaInfo.getUrl()+"} already exist..");
+        }
+
     }
 
-    public RequestMetaInfo getRequestMetaInfoByUrl(String url){
-        return requestMetaInfoMap.get(url);
-    }
 
     public void reload(){
         init();
@@ -55,21 +65,109 @@ public class XMLDao  {
 
     @SneakyThrows
     public void addMeta(RequestMetaInfo requestMetaInfo){
-        if (Objects.nonNull(requestMetaInfoMap.get(requestMetaInfo.getUrl()))){
-            throw new RuntimeException("url already exist...");
-        }
-        requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
-        synchronized (this){
-            xmlDataBase.getRequestMetaInfos().add(requestMetaInfo);
-            JAXBContext context = JAXBContext.newInstance(XMLDataBase.class);
-            String path=this.getClass().getClassLoader().getResource("db.xml").getPath();
-            try(FileWriter fileWriter=new FileWriter(path)){
-                context.createMarshaller().marshal(xmlDataBase,fileWriter);
+            long stamp=-1;
+            try{
+                stamp=stampedLock.writeLock();
+                recordUrl(requestMetaInfo);
+                requestMetaInfo.setId(nextIndex++);
+                getDB().add(requestMetaInfo);
+                JAXBContext context = JAXBContext.newInstance(XMLDataBase.class);
+                String path=this.getClass().getClassLoader().getResource("db.xml").getPath();
+                try(FileWriter fileWriter=new FileWriter(path)){
+                    context.createMarshaller().marshal(xmlDataBase,fileWriter);
+                }
+            }finally {
+                if (stamp!=-1){
+                    stampedLock.unlockWrite(stamp);
+                }
             }
-        }
+
+
+
     }
 
     public List<RequestMetaInfo> showAllMetaInfo(){
-        return Collections.unmodifiableList(xmlDataBase.getRequestMetaInfos())
+        long stamp=-1;
+        try{
+            stamp=stampedLock.readLock();
+            return Collections.unmodifiableList(getDB());
+        }finally {
+            if (stamp!=-1){
+                stampedLock.unlockRead(stamp);
+            }
+        }
+
+    }
+
+    public void deleteById(int id){
+        long stamp=-1;
+        try{
+            stamp=stampedLock.writeLock();
+            List<RequestMetaInfo> requestMetaInfos= getDB();
+            RequestMetaInfoLocation requestMetaInfoLocation=binaryFindById(id,0, getDB().size()-1);
+            requestMetaInfos.set(requestMetaInfoLocation.getLocation(),null);  //TODO 用定时任务 定时去清理为null的对象
+        }finally {
+            if (stamp!=-1){
+                stampedLock.unlockWrite(stamp);
+            }
+        }
+
+    }
+
+    private List<RequestMetaInfo> getDB() {
+        return xmlDataBase.getRequestMetaInfos();
+    }
+
+    public void updateById(int id,RequestMetaInfo requestMetaInfo){
+
+        long stamp=-1;
+        try{
+            stamp=stampedLock.writeLock();
+            List<RequestMetaInfo> requestMetaInfos= getDB();
+            RequestMetaInfoLocation requestMetaInfoLocation=binaryFindById(id,0, getDB().size()-1);
+            requestMetaInfos.set(requestMetaInfoLocation.getLocation(),requestMetaInfo);
+        }finally {
+            if (stamp!=-1){
+                stampedLock.unlockWrite(stamp);
+            }
+        }
+
+
+    }
+
+    public RequestMetaInfo findById(int id){
+        long stamp=-1;
+        try{
+            stamp=stampedLock.readLock();
+            return binaryFindById(id,0,getDB().size()-1).getRequestMetaInfo();
+        }finally {
+            if (stamp!=-1){
+                stampedLock.unlockRead(stamp);
+            }
+        }
+
+
+    }
+
+    private RequestMetaInfoLocation binaryFindById(int id, int beginIndex, int endIndex){
+        List<RequestMetaInfo> requestMetaInfos= getDB();
+        if (endIndex<=beginIndex){ //迭代结束
+            RequestMetaInfo requestMetaInfo=requestMetaInfos.get(endIndex);
+            if (requestMetaInfo.getId()==id){
+                return new RequestMetaInfoLocation(endIndex,requestMetaInfo);
+            }else{
+                throw new RuntimeException("not find");
+            }
+        }
+        int midleIndex=(endIndex-beginIndex)>>1+1;
+        RequestMetaInfo requestMetaInfo=requestMetaInfos.get(midleIndex);
+        if (requestMetaInfo.getId()<id){
+            return binaryFindById(id,midleIndex+1,endIndex);
+        }else if (requestMetaInfo.getId()>id){
+            return binaryFindById(id,beginIndex,midleIndex-1);
+        }else{
+            return new RequestMetaInfoLocation(midleIndex,requestMetaInfo);
+        }
+
     }
 }

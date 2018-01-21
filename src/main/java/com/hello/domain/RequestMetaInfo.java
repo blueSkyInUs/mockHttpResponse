@@ -14,6 +14,7 @@ import java.util.Objects;
  */
 @Data
 public class RequestMetaInfo {
+    private int id;
     private HttpMethod httpMethod;
     private String url;
     private String preRequestScript; //支持javascript脚本对请求 做逻辑处理

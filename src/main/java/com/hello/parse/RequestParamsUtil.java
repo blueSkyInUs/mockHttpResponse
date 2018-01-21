@@ -18,8 +18,8 @@ import java.util.Map;
 @Component
 public class RequestParamsUtil {
     @SneakyThrows
-    public Map<String,String> findAllRequestParams(HttpRequest httpRequest){
-        Map<String,String> paramsMap= new HashMap<>();
+    public Map<String,Object> findAllRequestParams(HttpRequest httpRequest){
+        Map<String,Object> paramsMap= new HashMap<>();
                 HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(httpRequest);
         List<InterfaceHttpData> parmList = decoder.getBodyHttpDatas();
 
