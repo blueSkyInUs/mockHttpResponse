@@ -7,6 +7,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Component;
  * @date 2018/1/9 18:12
  */
 @Component
-@Order(1)
 @Slf4j
 public class AdminUrlHandler{
 
@@ -34,6 +34,7 @@ public class AdminUrlHandler{
         BizController bizController=controllerManagerUtil.findBizControllerByUrl(request.uri().replaceFirst("/admin",""));
         return bizController.render(request);
     }
+
 
 
 }

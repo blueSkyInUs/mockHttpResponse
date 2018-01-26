@@ -43,7 +43,7 @@
                            </div>
                            <div class="form-group">
                                <label for="inputfile">请求内容预处理脚本:</label>
-                               <input type="text" name="preRequestScript" >
+                               <textarea cols="50" rows="10" name="preRequestScript" ></textarea>
                            </div>
                            <div class="form-group">
                                <label for="inputfile">响应内容格式:</label>
@@ -56,11 +56,11 @@
                            </div>
                            <div class="form-group">
                                <label for="inputfile">响应内容:</label>
-                               <input type="text" name="responseContent" >
+                               <textarea cols="50" rows="10" name="responseContent"></textarea>
                            </div>
                            <div class="form-group">
                                <label for="inputfile">响应内容预处理脚本:</label>
-                               <input type="text" name="preResponseScript" >
+                               <textarea cols="50" rows="10" name="preResponseScript" ></textarea>
                            </div>
                    </div>
                    <div class="modal-footer">
@@ -71,13 +71,9 @@
                </div><!-- /.modal-content -->
            </div><!-- /.modal -->
        </div>
-
-
        #foreach( $requestInfo in $requestMetaInfos)
            <li class="list-group-item"><a href="$requestInfo.id"> $requestInfo.url</a></li>
        #end
    </ul>
-
-
 </body>
 </html>

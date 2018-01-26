@@ -18,9 +18,15 @@ import java.util.Map;
  */
 @Component
 public class RequestParamsUtil {
+    /**
+     * 头部 请求参数体  全部合并到一起
+     * @param httpRequest
+     * @return
+     */
     @SneakyThrows
     public Map<String,Object> findAllRequestParams(HttpRequest httpRequest){
         Map<String,Object> paramsMap= new HashMap<>();
+
         HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(new DefaultHttpDataFactory(false), httpRequest);
         List<InterfaceHttpData> parmList = decoder.getBodyHttpDatas();
         for (InterfaceHttpData parm : parmList) {
@@ -28,6 +34,10 @@ public class RequestParamsUtil {
             //TODO 数组怎么处理
             paramsMap.put(data.getName(), data.getValue());
         }
+
+        httpRequest.headers().entries().forEach(entry->{
+            paramsMap.put(entry.getKey(),entry.getValue());
+        });
         return paramsMap;
     }
 }

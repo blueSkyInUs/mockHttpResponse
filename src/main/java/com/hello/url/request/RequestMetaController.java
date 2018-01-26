@@ -9,7 +9,6 @@ import com.hello.parse.AdminUrlParser;
 import com.hello.result.ResponseResult;
 import com.hello.result.ResponseType;
 import io.netty.handler.codec.http.HttpRequest;
-import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +39,6 @@ public class RequestMetaController implements  BizController {
     @Override
     public ResponseResult<String> process(HttpRequest request) {
 
-        VelocityEngine velocityEngine=new VelocityEngine();
         switch(request.method().name()){
             case "GET": return getResource(request);
             case "POST":return addResource(request);

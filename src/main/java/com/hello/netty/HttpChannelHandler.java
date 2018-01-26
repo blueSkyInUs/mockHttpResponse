@@ -1,15 +1,22 @@
 package com.hello.netty;
 
+import com.alibaba.fastjson.JSONObject;
+import com.hello.exception.BaseException;
 import com.hello.handle.DynamicResourceHandle;
 import com.hello.handle.StaticResourceHandle;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
  * @author lesson
@@ -32,10 +39,29 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
          FullHttpResponse response ;
         if (msg instanceof HttpRequest) {
             request = (HttpRequest) msg;
-            if (isDynamic(request.uri())){
-                response=dynamicResourceHandle.handle(request);
-            }else{
-                response=staticResourceHandle.handle(request);
+            if (request.uri().equals("/")){
+                response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.FOUND, Unpooled.wrappedBuffer("".getBytes("UTF-8")));
+                response.headers().add("Location","/admin/requestmeta/");
+                ctx.write(response);
+                return;
+            }
+            try{
+                if (isDynamic(request.uri())){
+                    response=dynamicResourceHandle.handle(request);
+                }else{
+                    response=staticResourceHandle.handle(request);
+                }
+            }catch(BaseException baseException){
+                JSONObject jsonObject=new JSONObject();
+                jsonObject.put("code",baseException.getErrorCode());
+                jsonObject.put("errorMsg",baseException.getErrorMsg());
+                response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(jsonObject.toJSONString().getBytes("UTF-8")));
+            }catch(Exception exception){
+                exception.printStackTrace();
+                JSONObject jsonObject=new JSONObject();
+                jsonObject.put("code","500");
+                jsonObject.put("errorMsg","系统异常");
+                response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(jsonObject.toString().getBytes("UTF-8")));
             }
             ctx.write(response);
         }

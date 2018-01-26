@@ -1,5 +1,5 @@
 $(function(){
-        $("input").on("change",function(){
+        $("input,textarea").on("change",function(){
              $("button#modify").removeAttr("disabled");
         });
         $("select").on("change",function(){

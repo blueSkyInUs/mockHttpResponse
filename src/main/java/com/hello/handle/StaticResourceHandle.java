@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
@@ -42,8 +46,14 @@ public class StaticResourceHandle{
         String resourcePath=url.substring(1);
         byte[] content=staticContents.get(resourcePath);
         if (Objects.isNull(content)){
-            ClassPathResource classPathResource=new ClassPathResource(resourcePath);
-            content=Files.readAllBytes(Paths.get(classPathResource.getURI()));
+            StringBuilder sb=new StringBuilder();
+            try(BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(resourcePath)))){
+                String temp;
+                while(  (temp=bufferedReader.readLine())!=null){
+                    sb.append(temp);
+                }
+            }
+            content=sb.toString().getBytes();
             staticContents.put(resourcePath,content);
         }
         return new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(content));

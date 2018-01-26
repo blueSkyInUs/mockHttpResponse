@@ -45,7 +45,7 @@
            <li class="list-group-item">
                <div class="form-group">
                    <label for="inputfile">请求内容预处理脚本:</label>
-                   <input type="text" name="preRequestScript" value="$!requestInfo.preRequestScript">
+                   <textarea cols="50" rows="10" name="preRequestScript" >$!requestInfo.preRequestScript</textarea>
                </div>
            </li>
            <li class="list-group-item">
@@ -62,13 +62,13 @@
            <li class="list-group-item">
                <div class="form-group">
                    <label for="inputfile">响应内容:</label>
-                   <input type="text" name="responseContent" value="$!requestInfo.responseContent">
+                   <textarea cols="50" rows="10" name="responseContent" >$!requestInfo.responseContent</textarea>
                </div>
            </li>
            <li class="list-group-item">
                <div class="form-group">
                    <label for="inputfile">响应内容预处理脚本:</label>
-                   <input type="text" name="preResponseScript" value="$!requestInfo.preResponseScript">
+                   <textarea cols="50" rows="10" name="preResponseScript" >$!requestInfo.preResponseScript</textarea>
                </div>
            </li>
            <li class="list-group-item">

@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -34,16 +35,31 @@ public class XMLDao  {
 
     private StampedLock stampedLock=new StampedLock();
 
+    private Map<String,RequestMetaInfo> requestMetaInfoMap=new HashMap<>();
+
 
     @PostConstruct
     @SneakyThrows
     public void init(){
         urlSet.add("/admin");  //不允许第三方设置以这个开头的url
         urlSet.add("/static");  //不允许第三方设置以这个开头的url
-        Resource resource=new ClassPathResource("db.xml");
+
         JAXBContext context = JAXBContext.newInstance(XMLDataBase.class);
         Unmarshaller unmarshaller=context.createUnmarshaller();
-        xmlDataBase= (XMLDataBase) unmarshaller.unmarshal(resource.getInputStream());
+
+        String parentPath=System.getProperty("user.dir");
+        String separator = System.getProperty("file.separator");
+        if (!parentPath.endsWith(separator)){
+            parentPath=parentPath+separator;
+        }
+
+        File file=new File(parentPath+"db.xml");
+        if (!file.exists()){
+            file.createNewFile();
+            xmlDataBase=new XMLDataBase();
+            return;
+        }
+        xmlDataBase= (XMLDataBase) unmarshaller.unmarshal(file);
         List<RequestMetaInfo> requestMetaInfos= getDB();
         requestMetaInfos.stream().forEach(this::recordUrl);
         int size=requestMetaInfos.size();
@@ -53,10 +69,10 @@ public class XMLDao  {
     }
 
     private void recordUrl(RequestMetaInfo requestMetaInfo){
+        requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
         if (!urlSet.add(requestMetaInfo.getUrl())){
             throw new RuntimeException("url:{"+requestMetaInfo.getUrl()+"} already exist..");
         }
-
     }
 
 
@@ -71,6 +87,7 @@ public class XMLDao  {
                 stamp=stampedLock.writeLock();
                 recordUrl(requestMetaInfo);
                 requestMetaInfo.setId(nextIndex++);
+                requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
                 getDB().add(requestMetaInfo);
                 persistDb();
             }finally {
@@ -85,8 +102,17 @@ public class XMLDao  {
 
     private void persistDb() throws JAXBException, IOException {
         JAXBContext context = JAXBContext.newInstance(XMLDataBase.class);
-        String path=this.getClass().getClassLoader().getResource("db.xml").getPath();
-        try(FileWriter fileWriter=new FileWriter(path)){
+
+        String parentPath=System.getProperty("user.dir");
+        String separator = System.getProperty("file.separator");
+        if (!parentPath.endsWith(separator)){
+            parentPath=parentPath+separator;
+        }
+        File file=new File(parentPath+"db.xml");
+        if (!file.exists()){
+            file.createNewFile();
+        }
+        try(FileWriter fileWriter=new FileWriter(file)){
             context.createMarshaller().marshal(xmlDataBase,fileWriter);
         }
     }
@@ -112,6 +138,7 @@ public class XMLDao  {
             List<RequestMetaInfo> requestMetaInfos= getDB();
             RequestMetaInfoLocation requestMetaInfoLocation=binaryFindById(id,0, getDB().size()-1);
             requestMetaInfos.set(requestMetaInfoLocation.getLocation(),null);  //TODO 用定时任务 定时去清理为null的对象
+            requestMetaInfoMap.remove(requestMetaInfoLocation.getRequestMetaInfo().getUrl());
             persistDb();
         }finally {
             if (stamp!=-1){
@@ -134,6 +161,7 @@ public class XMLDao  {
             List<RequestMetaInfo> requestMetaInfos= getDB();
             RequestMetaInfoLocation requestMetaInfoLocation=binaryFindById(id,0, getDB().size()-1);
             requestMetaInfos.set(requestMetaInfoLocation.getLocation(),requestMetaInfo);
+            requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
             persistDb();
         }finally {
             if (stamp!=-1){
@@ -156,6 +184,10 @@ public class XMLDao  {
                 stampedLock.unlockRead(stamp);
             }
         }
+    }
+
+    public RequestMetaInfo findByUrl(String url){
+        return requestMetaInfoMap.get(url);
     }
 
     private RequestMetaInfoLocation binaryFindById(int id, int beginIndex, int endIndex){
