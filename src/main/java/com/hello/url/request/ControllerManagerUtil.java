@@ -20,8 +20,6 @@ public class ControllerManagerUtil {
     @Autowired
     private List<BizController> bizControllers;
 
-    @Autowired
-    private UrlUniformer urlUniformer;
 
     Map<String,BizController> bizControllerMap=new HashMap<>();
 
@@ -31,12 +29,12 @@ public class ControllerManagerUtil {
     }
 
     private void addBizController(BizController bizController){
-        String url=urlUniformer.adjustUrl(bizController.showMyAcceptUrl());
+        String url=UrlUniformer.adjustUrl(bizController.showMyAcceptUrl());
         bizControllerMap.put(url,bizController);
     }
 
     public BizController findBizControllerByUrl(String url){
-        url=urlUniformer.adjustUrl(url);
+        url=UrlUniformer.adjustUrl(url);
         BizController bizController=bizControllerMap.get(url);
         if (Objects.nonNull(bizController)){
             return bizController;

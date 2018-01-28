@@ -1,9 +1,10 @@
 package com.hello.netty;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hello.exception.BaseException;
 import com.hello.handle.DynamicResourceHandle;
 import com.hello.handle.StaticResourceHandle;
+import com.hello.result.ResponseType;
+import com.hello.result.Result;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -52,16 +53,12 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
                     response=staticResourceHandle.handle(request);
                 }
             }catch(BaseException baseException){
-                JSONObject jsonObject=new JSONObject();
-                jsonObject.put("code",baseException.getErrorCode());
-                jsonObject.put("errorMsg",baseException.getErrorMsg());
-                response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(jsonObject.toJSONString().getBytes("UTF-8")));
+                Result result=new Result(ResponseType.NOTIFY,baseException.getErrorCode(),baseException.getErrorMsg(),"");
+                response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(result.toString().getBytes("UTF-8")));
             }catch(Exception exception){
                 exception.printStackTrace();
-                JSONObject jsonObject=new JSONObject();
-                jsonObject.put("code","500");
-                jsonObject.put("errorMsg","系统异常");
-                response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(jsonObject.toString().getBytes("UTF-8")));
+                Result result=new Result(ResponseType.NOTIFY,"500","系统异常","");
+                response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(result.toString().getBytes("UTF-8")));
             }
             ctx.write(response);
         }

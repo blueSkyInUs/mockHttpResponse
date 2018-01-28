@@ -1,6 +1,6 @@
 package com.hello.url.request;
 
-import com.hello.result.ResponseResult;
+import com.hello.result.Result;
 import io.netty.handler.codec.http.HttpRequest;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ public class DefaultController  implements  BizController{
     }
 
     @Override
-    public ResponseResult<String> process(HttpRequest request) {
+    public Result<String> process(HttpRequest request) {
         return null;
     }
 }

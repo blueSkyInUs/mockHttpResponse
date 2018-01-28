@@ -3,10 +3,10 @@ package com.hello.dao;
 import com.hello.domain.RequestMetaInfo;
 import com.hello.domain.RequestMetaInfoLocation;
 import com.hello.domain.XMLDataBase;
+import com.hello.exception.ResourceFobiddenAccessException;
+import com.hello.exception.URLNotFoundException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -29,8 +29,6 @@ public class XMLDao  {
 
     private XMLDataBase xmlDataBase;
 
-    private Set<String> urlSet=new HashSet<>();
-
     private volatile int nextIndex=1;
 
     private StampedLock stampedLock=new StampedLock();
@@ -41,8 +39,8 @@ public class XMLDao  {
     @PostConstruct
     @SneakyThrows
     public void init(){
-        urlSet.add("/admin");  //不允许第三方设置以这个开头的url
-        urlSet.add("/static");  //不允许第三方设置以这个开头的url
+        requestMetaInfoMap.put("/admin",null);  //不允许第三方设置以这个开头的url
+        requestMetaInfoMap.put("/static",null);  //不允许第三方设置以这个开头的url
 
         JAXBContext context = JAXBContext.newInstance(XMLDataBase.class);
         Unmarshaller unmarshaller=context.createUnmarshaller();
@@ -56,6 +54,8 @@ public class XMLDao  {
         File file=new File(parentPath+"db.xml");
         if (!file.exists()){
             file.createNewFile();
+        }
+        if (file.length()==0){
             xmlDataBase=new XMLDataBase();
             return;
         }
@@ -69,10 +69,13 @@ public class XMLDao  {
     }
 
     private void recordUrl(RequestMetaInfo requestMetaInfo){
-        requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
-        if (!urlSet.add(requestMetaInfo.getUrl())){
-            throw new RuntimeException("url:{"+requestMetaInfo.getUrl()+"} already exist..");
+        if (requestMetaInfo.getUrl().startsWith("/admin")||requestMetaInfo.getUrl().startsWith("/static")){
+            throw  new ResourceFobiddenAccessException();
         }
+        if (requestMetaInfoMap.containsKey(requestMetaInfo.getUrl())){
+            throw  new ResourceFobiddenAccessException();
+        }
+        requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
     }
 
 
@@ -95,9 +98,6 @@ public class XMLDao  {
                     stampedLock.unlockWrite(stamp);
                 }
             }
-
-
-
     }
 
     private void persistDb() throws JAXBException, IOException {
@@ -137,7 +137,7 @@ public class XMLDao  {
             stamp=stampedLock.writeLock();
             List<RequestMetaInfo> requestMetaInfos= getDB();
             RequestMetaInfoLocation requestMetaInfoLocation=binaryFindById(id,0, getDB().size()-1);
-            requestMetaInfos.set(requestMetaInfoLocation.getLocation(),null);  //TODO 用定时任务 定时去清理为null的对象
+            requestMetaInfos.remove(requestMetaInfoLocation.getLocation());
             requestMetaInfoMap.remove(requestMetaInfoLocation.getRequestMetaInfo().getUrl());
             persistDb();
         }finally {
@@ -160,6 +160,10 @@ public class XMLDao  {
             stamp=stampedLock.writeLock();
             List<RequestMetaInfo> requestMetaInfos= getDB();
             RequestMetaInfoLocation requestMetaInfoLocation=binaryFindById(id,0, getDB().size()-1);
+            if (!requestMetaInfo.getUrl().equals(requestMetaInfoLocation.getRequestMetaInfo().getUrl())){
+                throw  new ResourceFobiddenAccessException();
+            }
+            recordUrl(requestMetaInfo);
             requestMetaInfos.set(requestMetaInfoLocation.getLocation(),requestMetaInfo);
             requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
             persistDb();
@@ -191,17 +195,21 @@ public class XMLDao  {
     }
 
     private RequestMetaInfoLocation binaryFindById(int id, int beginIndex, int endIndex){
+        log.info("{},{},{}",id,beginIndex,endIndex);
         List<RequestMetaInfo> requestMetaInfos= getDB();
-        if (endIndex<=beginIndex){ //迭代结束
-            RequestMetaInfo requestMetaInfo=requestMetaInfos.get(endIndex);
-            if (requestMetaInfo.getId()==id){
-                return new RequestMetaInfoLocation(endIndex,requestMetaInfo);
+        int midleIndex=(endIndex-beginIndex)>>1;
+        if (midleIndex==0){
+            RequestMetaInfo end=requestMetaInfos.get(endIndex);
+            RequestMetaInfo begin=requestMetaInfos.get(beginIndex);
+            if (end.getId()==id){
+                return new RequestMetaInfoLocation(endIndex,end);
+            }else if(begin.getId()==id){
+                return new RequestMetaInfoLocation(beginIndex,begin);
             }else{
-                throw new RuntimeException("not find");
+                throw new URLNotFoundException();
             }
         }
-        int midleIndex=(endIndex-beginIndex)>>1;
-        RequestMetaInfo requestMetaInfo=requestMetaInfos.get(midleIndex);
+        RequestMetaInfo requestMetaInfo=requestMetaInfos.get(beginIndex+midleIndex);
         if (requestMetaInfo.getId()<id){
             return binaryFindById(id,midleIndex+1,endIndex);
         }else if (requestMetaInfo.getId()>id){

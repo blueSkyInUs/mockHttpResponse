@@ -7,8 +7,11 @@ $(function(){
                   url: '',
                   data: $("form").serialize(),
                   success: function(data) {
-                      if (data=='success'){
-                      window.location.reload();
+                      data=$.parseJSON(data);
+                      if (data.status=='200'){
+                         window.location.reload();
+                      }else{
+                         alert(data.errorMsg);
                       }
                   }
               });

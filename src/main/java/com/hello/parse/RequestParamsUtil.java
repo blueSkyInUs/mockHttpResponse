@@ -1,6 +1,7 @@
 package com.hello.parse;
 
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
@@ -34,6 +35,10 @@ public class RequestParamsUtil {
             //TODO 数组怎么处理
             paramsMap.put(data.getName(), data.getValue());
         }
+        QueryStringDecoder queryStringDecoder = new QueryStringDecoder(httpRequest.uri());
+        queryStringDecoder.parameters().entrySet().forEach( entry -> {
+            paramsMap.put(entry.getKey(), entry.getValue());
+        });
 
         httpRequest.headers().entries().forEach(entry->{
             paramsMap.put(entry.getKey(),entry.getValue());

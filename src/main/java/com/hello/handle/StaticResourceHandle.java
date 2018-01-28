@@ -5,16 +5,10 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -28,8 +22,6 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 @Component
 public class StaticResourceHandle{
 
-    @Autowired
-    private UrlUniformer urlUniformer;
 
     private LinkedHashMap<String,byte[]> staticContents=new LinkedHashMap<String,byte[]>(100){
         @Override
@@ -42,7 +34,7 @@ public class StaticResourceHandle{
     };
 
     public DefaultFullHttpResponse handle(HttpRequest request ) throws  Exception{
-        String url=urlUniformer.adjustUrl(request.uri());
+        String url=UrlUniformer.adjustUrl(request.uri());
         String resourcePath=url.substring(1);
         byte[] content=staticContents.get(resourcePath);
         if (Objects.isNull(content)){

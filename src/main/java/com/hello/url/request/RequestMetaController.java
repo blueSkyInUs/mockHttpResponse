@@ -6,8 +6,8 @@ import com.hello.dao.XMLDao;
 import com.hello.domain.AdminUrlMetaInfo;
 import com.hello.domain.RequestMetaInfo;
 import com.hello.parse.AdminUrlParser;
-import com.hello.result.ResponseResult;
 import com.hello.result.ResponseType;
+import com.hello.result.Result;
 import io.netty.handler.codec.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,7 +37,7 @@ public class RequestMetaController implements  BizController {
     }
 
     @Override
-    public ResponseResult<String> process(HttpRequest request) {
+    public Result<String> process(HttpRequest request) {
 
         switch(request.method().name()){
             case "GET": return getResource(request);
@@ -52,31 +52,31 @@ public class RequestMetaController implements  BizController {
      * 主要需求应该是列表和添加  那么用List就比map好一些
      * @param request
      */
-    private ResponseResult<String> deleteResource(HttpRequest request) {
+    private Result<String> deleteResource(HttpRequest request) {
         AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
         xmlDao.deleteById(adminUrlMetaInfo.getId());
-        return new ResponseResult<>(ResponseType.NOTIFY,"success");
+        return new Result<>(ResponseType.NOTIFY,"");
     }
 
-    private ResponseResult<String> updateResource(HttpRequest request) {
+    private Result<String> updateResource(HttpRequest request) {
         AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
         RequestMetaInfo requestMetaInfo=requestMetaInfoConverter.convertRequestMetaInfo(request);
         xmlDao.updateById(adminUrlMetaInfo.getId(),requestMetaInfo);
-        return new ResponseResult<>(ResponseType.NOTIFY,"success");
+        return new Result<>(ResponseType.NOTIFY,"");
     }
 
-    private ResponseResult<String> addResource(HttpRequest request) {
+    private Result<String> addResource(HttpRequest request) {
         RequestMetaInfo requestMetaInfo=requestMetaInfoConverter.convertRequestMetaInfo(request);
         xmlDao.addMeta(requestMetaInfo);
-        return new ResponseResult<>(ResponseType.NOTIFY,"success");
+        return new Result<>(ResponseType.NOTIFY,"");
     }
 
-    private ResponseResult<String> getResource(HttpRequest request) {
+    private Result<String> getResource(HttpRequest request) {
         AdminUrlMetaInfo adminUrlMetaInfo=adminUrlParser.parse(request.uri());
         if (Objects.isNull(adminUrlMetaInfo.getId())){
-            return new ResponseResult<>(ResponseType.CONTENT,JSONArray.toJSONString(xmlDao.showAllMetaInfo()));
+            return new Result<>(ResponseType.CONTENT,JSONArray.toJSONString(xmlDao.showAllMetaInfo()));
         }else {
-            return new ResponseResult<>(ResponseType.CONTENT,JSONArray.toJSONString(xmlDao.findById(adminUrlMetaInfo.getId())));
+            return new Result<>(ResponseType.CONTENT,JSONArray.toJSONString(xmlDao.findById(adminUrlMetaInfo.getId())));
         }
     }
 
