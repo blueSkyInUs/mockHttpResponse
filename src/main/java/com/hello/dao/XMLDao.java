@@ -69,7 +69,7 @@ public class XMLDao  {
     }
 
     private void recordUrl(RequestMetaInfo requestMetaInfo){
-        if (requestMetaInfo.getUrl().startsWith("/admin")||requestMetaInfo.getUrl().startsWith("/static")){
+        if (requestMetaInfo.getUrl().equals("/admin")||requestMetaInfo.getUrl().equals("/static")){
             throw  new ResourceFobiddenAccessException();
         }
         if (requestMetaInfoMap.containsKey(requestMetaInfo.getUrl())){
@@ -164,7 +164,6 @@ public class XMLDao  {
             if (!requestMetaInfo.getUrl().equals(requestMetaInfoLocation.getRequestMetaInfo().getUrl())){
                 throw  new ResourceFobiddenAccessException();
             }
-            recordUrl(requestMetaInfo);
             requestMetaInfos.set(requestMetaInfoLocation.getLocation(),requestMetaInfo);
             requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
             persistDb();

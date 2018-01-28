@@ -16,7 +16,7 @@
            <li class="list-group-item">
                <div class="form-group">
                    <label for="inputfile">地址:</label>
-                   <input type="text" name="url" value="$!requestInfo.url">
+                   <input type="text" name="url" disabled ="disabled" value="$!requestInfo.url">
                </div>
            </li>
            <li class="list-group-item">
