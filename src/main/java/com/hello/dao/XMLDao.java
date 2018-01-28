@@ -73,6 +73,7 @@ public class XMLDao  {
             throw  new ResourceFobiddenAccessException();
         }
         if (requestMetaInfoMap.containsKey(requestMetaInfo.getUrl())){
+            log.info("already exist");
             throw  new ResourceFobiddenAccessException();
         }
         requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);

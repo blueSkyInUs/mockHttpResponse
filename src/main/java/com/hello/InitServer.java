@@ -1,5 +1,6 @@
 package com.hello;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -9,8 +10,10 @@ import org.springframework.context.annotation.ComponentScan;
  */
 
 @ComponentScan
+@Slf4j
 public class InitServer {
     public static void main(String[] args) {
+        log.info("hello");
         SpringApplication springApplication=new SpringApplication(InitServer.class);
         springApplication.run(args);
     }
