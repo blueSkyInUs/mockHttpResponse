@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="/static/js/jquery.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/detailInfo.js"></script>
     <link rel="stylesheet" href="/static/css/bootstrap.min.css"></link>
@@ -16,7 +16,7 @@
            <li class="list-group-item">
                <div class="form-group">
                    <label for="inputfile">地址:</label>
-                   <input type="text" name="url" disabled ="disabled" value="$!requestInfo.url">
+                   <input type="text" name="url" readonly="readonly" value="$!requestInfo.url">
                </div>
            </li>
            <li class="list-group-item">
