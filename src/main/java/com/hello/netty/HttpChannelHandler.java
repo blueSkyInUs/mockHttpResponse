@@ -40,6 +40,7 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
          FullHttpResponse response ;
         if (msg instanceof HttpRequest) {
             request = (HttpRequest) msg;
+            log.info("url:{}",request.uri());
             if (request.uri().equals("/")){
                 response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.FOUND, Unpooled.wrappedBuffer("".getBytes("UTF-8")));
                 response.headers().add("Location","/admin/requestmeta/");
@@ -56,12 +57,13 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
                 log.error(baseException.getMessage(),baseException);
                 Result result=new Result(ResponseType.NOTIFY,baseException.getErrorCode(),baseException.getErrorMsg(),"");
                 response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(result.toString().getBytes("UTF-8")));
+                response.headers().add("Content-Type", "text/plain;charset=utf-8");
             }catch(Exception exception){
                 log.error(exception.getMessage(),exception);
                 Result result=new Result(ResponseType.NOTIFY,"500","系统异常","");
                 response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(result.toString().getBytes("UTF-8")));
+                response.headers().add("Content-Type", "text/plain;charset=utf-8");
             }
-            response.headers().add("Content-Type", "text/plain;charset=utf-8");
             ctx.write(response);
         }
 

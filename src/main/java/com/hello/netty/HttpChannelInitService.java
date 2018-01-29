@@ -28,7 +28,7 @@ public class HttpChannelInitService extends ChannelInitializer<SocketChannel> {
         sc.pipeline().addLast(new HttpRequestDecoder());
         sc.pipeline().addLast(new HttpResponseEncoder());
         sc.pipeline().addLast(new HttpObjectAggregator(1048576));
-        sc.pipeline().addLast("http-chunked", new ChunkedWriteHandler());
+        sc.pipeline().addLast("chunkedWriter", new ChunkedWriteHandler());
         sc.pipeline().addLast(httpChannelHandler);
 
     }

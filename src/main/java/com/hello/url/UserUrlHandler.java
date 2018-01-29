@@ -57,6 +57,7 @@ public class UserUrlHandler {
             throw new URLNotFoundException();
         }
         String response = requestMetaInfo.getResponseContent();
+        String requestParams="";
         StringBuilder sb = new StringBuilder();
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("jsUtil/encrypt.js")))) {
             String temp;
@@ -68,13 +69,13 @@ public class UserUrlHandler {
 
         Map<String, Object> requestMap = requestParamsUtil.findAllRequestParams(request);
         if (StringUtils.isNotEmpty(requestMetaInfo.getPreRequestScript())) {
-            response = javaScriptEngine.invokerJSRequestScript(prefix + requestMetaInfo.getPreRequestScript(), PRE_HANDLE_REQUEST_PARAMS_FUNCTION_NAME, new JSONObject(requestMap));
-            if ("-1".equals(response)) {
+            requestParams = javaScriptEngine.invokerJSRequestScript(prefix + requestMetaInfo.getPreRequestScript(), PRE_HANDLE_REQUEST_PARAMS_FUNCTION_NAME, new JSONObject(requestMap));
+            if ("-1".equals(requestParams)) {
                 throw new DecryptException();
             }
         }
         if (StringUtils.isNotEmpty(requestMetaInfo.getPreResponseScript())) {
-            response = javaScriptEngine.invokerJSResponseScript(prefix + requestMetaInfo.getPreResponseScript(), PRE_HANDLE_RESPONSE_CONTENT_FUNCTION_NAME, JSONObject.parseObject(response), requestMetaInfo.getResponseContent());
+            response = javaScriptEngine.invokerJSResponseScript(prefix + requestMetaInfo.getPreResponseScript(), PRE_HANDLE_RESPONSE_CONTENT_FUNCTION_NAME, JSONObject.parseObject(requestParams), requestMetaInfo.getResponseContent());
         }
         DefaultFullHttpResponse defaultFullHttpResponse = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(response.getBytes("UTF-8")));
         defaultFullHttpResponse.headers().add("Content-Type", chooseResponseType(requestMetaInfo));

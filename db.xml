@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><xmlDataBase><requestMetaInfos><requestMetaInfo><httpMethod>POST</httpMethod><id>4</id><preRequestScript>function handleRequestParams(requestParam){
+                var salt="9sgs8d9wejwet8we";
+                var sign=requestParam.getString("sign").toLowerCase();
+                var sid=requestParam.getString("sid");
+                if (hex_md5(hex_md5(sid).toUpperCase()+salt).toLowerCase() != sign){
+                return "-1";
+                }
+                return sid;
+                }
+            </preRequestScript><preResponseScript></preResponseScript><requestContentType>BODY</requestContentType><responseContent>{
+  "retCode": "00000",
+  "tips": "请求成功",
+  "info": {
+    "listInfo1": {
+      "result": true,
+      "score": 666,
+      "idCard": "1234567890",
+      "message": "成功返回芝麻信用分",
+      "statusCode": "200"
+    },
+    "listInfo2": {
+      "result": true,
+      "score": 77,
+      "idCard": "1234567890",
+      "message": "成功返回芝麻欺诈评分",
+      "statusCode": "200"
+    },
+    "retCode": "00000",
+    "listInfo": {
+      "result": "true",
+      "matched": "true",
+      "message": "请求成功",
+      "statusCode": "200",
+      "info": [
+        [{
+          "code": "AA001007",
+          "level": 0,
+          "bizCode": "AA",
+          "refreshTime": "2016-06-11 00:00:00",
+          "extendInfo": [{
+            "description": "逾期金额（元）",
+            "value": "M05",
+            "key": "event_max_amt_code"
+          }],
+          "type": "AA001",
+          "settlement": true
+        }]
+      ]
+    },
+    "retMsg": "成功"
+  }
+}</responseContent><responseContentType>HTML</responseContentType><url>/cardniuloan/outer/activate/user/zmxy/info/</url></requestMetaInfo><requestMetaInfo><httpMethod>POST</httpMethod><id>6</id><preRequestScript>function handleRequestParams(requestParam){
+                var salt="9sgs8d9wejwet8we";
+                var sign=requestParam.getString("sign").toLowerCase();
+                var sid=requestParam.getString("sid");
+                if (hex_md5(hex_md5(sid).toUpperCase()+salt).toLowerCase() != sign){
+                return "-1";
+                }
+                return sid;
+                }
+            </preRequestScript><preResponseScript></preResponseScript><requestContentType>BODY</requestContentType><responseContent>{
+  "retCode": "00000",
+  "tips": "请求成功",
+  "info": {
+    "totalContactTime": "1106.80",
+    "udidList": "",
+    "stateOne": "无通话记录",
+    "isCallFriendOne": -1,
+    "province": "湖北",
+    "threeMonthContactTime": "464.04",
+    "state": 1,
+    "creditCalcuteResults": [],
+    "isBlacklist": -1,
+    "contact110": 0,
+    "aveOutCallCount": 26,
+    "provincePercent": "85.85",
+    "linkAddr": "硚口区星",
+    "isPhoneOneBlackList": 0,
+    "isCallFriendThree": 0,
+    "isCallFriendTwo": -1,
+    "month": 6,
+    "phone": "151****8845",
+    "aveOutCall": "54.03",
+    "stateThree": "无通话记录",
+    "billResults": [{
+      "business": "移动",
+      "province": "湖北",
+      "month": "2018-01",
+      "phone": "151****8845",
+      "outCallTime": 19.89,
+      "contactCost": "16.35",
+      "inCallTime": 118.97,
+      "msgCount": 16
+    }],
+    "blackListCount": 0,
+    "isPhoneThreeBlackList": 0,
+    "crawlIdCardNo": "420104********362*",
+    "enterIdCardNo": "420104**********262X",
+    "origin": "湖北省",
+    "isCheckName": 1,
+    "isIdCardNo": 1,
+    "concatMacao": "主叫0次,共0分钟,被叫0次,共0分钟",
+    "onlineTime": "67",
+    "mutualContactCount": 11,
+    "contact120": 0,
+    "place": "湖北武汉",
+    "bankCalcuteResults": [],
+    "enterName": "康**",
+    "provincePojos": [{
+      "contactCount": 235,
+      "contactTime": 142.74,
+      "province": "湖北",
+      "outCallTime": 80.49,
+      "inCallTime": 62.25,
+      "inCallCount": 123,
+      "outCallCount": 112,
+      "phoneCount": 43
+    }],
+    "aveInCall": "130.44",
+    "friendResults": [{
+      "data": [{
+        "callDuration": "23.22",
+        "month": "201710",
+        "counts": "17"
+      }],
+      "phone": "123456789"
+    }],
+    "business": "移动",
+    "disContactDay": 16,
+    "sex": "0",
+    "aveInCallCount": 40,
+    "stateTwo": "无通话记录",
+    "phoneCountPojos": [{
+      "contactTime": 763.18,
+      "weeksTimes": 1,
+      "inCallTime": 540.23,
+      "monthTimes": 6,
+      "firstContactTime": 1501****000,
+      "inCallCount": 87,
+      "label": "",
+      "lastContact": "2018-01-25 19:28:37",
+      "firstContact": "2017-08-02 18:18:04",
+      "contactCount": 120,
+      "province": "辽宁",
+      "outCallTime": 222.95,
+      "phone": "1599****216",
+      "lastContactTime": 1516****000,
+      "outCallCount": 33
+    }],
+    "crawlName": "*雯",
+    "createTime": "2018-01-29 19:07:17",
+    "friendProvince": "湖北",
+    "isPhoneTwoBlackList": 0,
+    "threaMonthContactCount": 183,
+    "isRealName": 1,
+    "age": 24
+  }
+}</responseContent><responseContentType>HTML</responseContentType><url>/cardniuloan/outer/activate/user/operator/info/</url></requestMetaInfo><requestMetaInfo><httpMethod>POST</httpMethod><id>7</id><preRequestScript>function handleRequestParams(requestParam){
+                var salt="9sgs8d9wejwet8we";
+                var sign=requestParam.getString("sign").toLowerCase();
+                var sid=requestParam.getString("sid");
+                if (hex_md5(hex_md5(sid).toUpperCase()+salt).toLowerCase() != sign){
+                return "-1";
+                }
+                return sid;
+                }
+            </preRequestScript><preResponseScript></preResponseScript><requestContentType>BODY</requestContentType><responseContent>{
+                "retCode": "00000",
+                "tips": "请求成功",
+                "info": {
+                "fund": [{
+                "fundUdid": "1234567890",
+                "birthday": "1987-01-14",
+                "livePostcode": "",
+                "nation": "",
+                "idCard": "1234567890",
+                "liveAddr": "",
+                "cityId": 163,
+                "isBlackList": false,
+                "cityName": "丽水市",
+                "fund_udid": "1234567890",
+                "workerProp": "",
+                "funds": [{
+                "lastTime": "2017-03-15 13:50:22",
+                "unitName": "纳爱斯集团有限公司",
+                "records": [{}],
+                "bankName": "",
+                "endPayDay": "",
+                "personalRatio": 0.08,
+                "companyRatio": 0.08,
+                "accountOpenTime": "",
+                "fundNo": "1234567890",
+                "balance": 63032.67,
+                "unitCode": "",
+                "beginPayDay": "",
+                "premiumBaseCalculationType": 3,
+                "premiumMonth": 1032.00,
+                "premiumBase": 6450.00,
+                "status": 3
+                }],
+                "payment": {
+                "isBalance10TimesFundMonthMoney": true
+                },
+                "email": "",
+                "sex": 1,
+                "mobile": "",
+                "degree": "",
+                "accountAddr": "",
+                "telephone": "",
+                "marriageStatus": "",
+                "accountProp": 3,
+                "isNameMatch": 2,
+                "name": "吕**",
+                "provinceName": "浙江省",
+                "startWorkDate": ""
+                }],
+                "creadit_bank": [{
+                "netbank_deposit_num": 1,
+                "is_full_repayment": "1",
+                "gender": "",
+                "is_match_netbank_house_holder": "0",
+                "netbank_credit_num": 1,
+                "is_lack_repayment": "0",
+                "is_t2": "0",
+                "is_t1": "0",
+                "is_cz": "1",
+                "lstNetBankOrderDataInfo": [{}],
+                "is_cardniu_blacklist": "0",
+                "lstNetBankCreditCardInfo": [{
+                "bank_code": "PSBC",
+                "pay_date": "10",
+                "bill_date": "21",
+                "sigup_date": "2016-10-02",
+                "card_end": "9715",
+                "card_type": "银联",
+                "cash_credit_limit": 6000.00,
+                "card_id": 100000286,
+                "full_card_num": "1234567890",
+                "card_level": "普卡",
+                "phone": "158****0437",
+                "bank_name": "邮储银行",
+                "credit_limit": 12000.00,
+                "currency": "CNY",
+                "limit_avail": 12000.00,
+                "pointsavailable": 92794.00,
+                "email": ""
+                }],
+                "is_seriously_overdue": "0",
+                "is_a1": "0",
+                "is_a3": "0",
+                "house_holder": "方*",
+                "is_a2": "0",
+                "email": "",
+                "is_c1": "0",
+                "lstNetBankCreditBillInfo": [{
+                "card_num": "9715",
+                "is_full_repayment": "1",
+                "month": "201701",
+                "payment_due_date": "2017-02-10",
+                "currency": "CNY",
+                "delay_status": "M0",
+                "min_payment": 774.18,
+                "new_charges": 8082.91,
+                "new_balance": 7741.83,
+                "card_id": 100286
+                }],
+                "address": "",
+                "cert_no": "",
+                "salaryDetailList": [{}],
+                "credit_card_num": 1,
+                "lstNetBankDepositCardInfo": [{
+                "is_sender": "0",
+                "sigup_date": "2016-10-30",
+                "pre_last_adjust_amt": 0,
+                "pre_send_month_count": 0,
+                "pre_adjust_amt_count": 0,
+                "full_card_num": "1234567890",
+                "pre_send_account_name": "",
+                "last_send_account_name": "",
+                "last_last_send_date": "",
+                "bank_name": "邮储银行",
+                "last_send_month_count": 0,
+                "email": "",
+                "pre_last_send_date": "",
+                "receive_account_names": [{}],
+                "bank_code": "PSBC",
+                "pre_adjust_amt_month": "",
+                "last_last_adjust_amt": 0,
+                "last_send_count": 0,
+                "card_end": "5070",
+                "pre_first_send_amt": 0,
+                "pre_sw_send_amt_diff": 0,
+                "card_id": 100000288,
+                "is_pay_card": "0",
+                "last_first_send_amt": 0,
+                "pre_send_count": 0,
+                "phone": "158****0437",
+                "last_last_send_amt": 0,
+                "last_adjust_amt_month": "",
+                "last_first_send_date": "",
+                "pre_first_send_date": "",
+                "last_sw_send_amt_diff": 0,
+                "last_tc_je_diff": 0,
+                "send_account_count": 0,
+                "last_adjust_amt_count": 0,
+                "pre_last_send_amt": 0,
+                "deposit_balance": 0.02
+                }],
+                "lstNetBankDetailSummaryInfo": [{
+                "normalTimeTransAmt": 0,
+                "normalTimeTransCnt": 0,
+                "trans_category_cnt": 11,
+                "trans_category_amt": 8612.08,
+                "nonWorkDayTransList": [{
+                "trans_week": 6,
+                "trans_cnt": 2,
+                "trans_amt": 2670.00
+                }],
+                "transCategoryList": [{
+                "trans_amt_per": 0.0232,
+                "trans_category": "汽车消费",
+                "trans_cnt": 1,
+                "trans_amt": 200.00,
+                "trans_cnt_per": 0.0909
+                }],
+                "card_id": 100000286,
+                "workDayTransList": [{
+                "trans_week": 1,
+                "trans_cnt": 3,
+                "trans_amt": 2432.90
+                }],
+                "month": "201610",
+                "nonNormalTimeTransAmt": 8612.08,
+                "transTypeList": [{
+                "trans_amt_per": 0.4484,
+                "trans_cnt": 1,
+                "trans_amt": 7000.00,
+                "trans_cnt_per": 0.0833,
+                "trans_type": "还款交易(主动)"
+                }],
+                "nonNormalTimeTransCnt": 11,
+                "normal_trans_amt": 0,
+                "trans_type_amt": 15612.08,
+                "normal_trans_cnt": 0,
+                "trans_type_cnt": 12
+                }],
+                "phone": "",
+                "is_wg": "0",
+                "lstNetBankDepositBillInfo": [{
+                "normal_exp_amt": 0,
+                "month_exp_cnt": 0,
+                "normal_exp_cnt": 0,
+                "month": "201703",
+                "normal_income_cnt": 0,
+                "normal_income_amt": 0,
+                "month_exp_amt": 0,
+                "month_income_cnt": 1,
+                "card_id": 100000288,
+                "month_income_amt": 0.02
+                }],
+                "is_b1": "0",
+                "is_hw": "",
+                "is_slightly_overdue": "0",
+                "is_h3": "0",
+                "is_ly": ""
+                }]
+                }
+                }
+            </responseContent><responseContentType>HTML</responseContentType><url>/cardniuloan/outer/activate/user/credit/info/</url></requestMetaInfo><requestMetaInfo><httpMethod>POST</httpMethod><id>8</id><preRequestScript>function handleRequestParams(requestParam){
+                var salt="9sgs8d9wejwet8we";
+                var sign=requestParam.getString("sign").toLowerCase();
+                var sid=requestParam.getString("sid");
+                if (hex_md5(hex_md5(sid).toUpperCase()+salt).toLowerCase() != sign){
+                return "-1";
+                }
+                return sid;
+                }
+            </preRequestScript><preResponseScript></preResponseScript><requestContentType>BODY</requestContentType><responseContent>{
+  "retCode": "00000",
+  "tips": "请求成功",
+  "info": {
+    "cardName": "康**",
+    "facePicture": "",
+    "phoneNo1": "1523***694",
+    "relationship2": "兄弟姐妹",
+    "phoneNo2": "1235498765",
+    "relationship1": "配偶",
+    "cardFace": "",
+    "cardId": "42010***129362X",
+    "faceSimilarity": "85.336",
+    "name2": "c",
+    "name1": "a"
+  }
+}</responseContent><responseContentType>HTML</responseContentType><url>/cardniuloan/outer/activate/user/base/info/</url></requestMetaInfo><requestMetaInfo><httpMethod>POST</httpMethod><id>9</id><preRequestScript>function handleRequestParams(requestParam){
+                var salt="9sgs8d9wejwet8we";
+                var sign=requestParam.getString("sign").toLowerCase();
+                var sid=requestParam.getString("sid");
+                if (hex_md5(hex_md5(sid).toUpperCase()+salt).toLowerCase() != sign){
+                return "-1";
+                }
+                return sid;
+                }
+            </preRequestScript><preResponseScript></preResponseScript><requestContentType>BODY</requestContentType><responseContent>
+                {"retCode":"00000","tips":"请求成功","info":{"bankCode":"01040000","bankCardNo":"6200*******97","mobile":"186****836","bankName":"中国银行","bankCity":"深圳市"}}
+            </responseContent><responseContentType>HTML</responseContentType><url>/cardniuloan/outer/activate/user/bank/info/</url></requestMetaInfo><requestMetaInfo><httpMethod>POST</httpMethod><id>10</id><preRequestScript>function handleRequestParams(requestParam){
+                var salt="9sgs8d9wejwet8we";
+                var sign=requestParam.getString("sign").toLowerCase();
+                var sid=requestParam.getString("sid");
+                if (hex_md5(hex_md5(sid).toUpperCase()+salt).toLowerCase() != sign){
+                return "-1";
+                }
+                return sid;
+                }
+            </preRequestScript><preResponseScript></preResponseScript><requestContentType>BODY</requestContentType><responseContent>
+                {"retCode":"00000","tips":"请求成功","info":{"lstContact":[{"phone":"12345671234","name":"赵"}],"lstCalllog":[{"duration":"14","date":"2017-09-18
+                17:10:26.0","phone":"1234567890","name":"","type":"2"}]}}
+            </responseContent><responseContentType>HTML</responseContentType><url>/cardniuloan/outer/activate/user/contacts/info/</url></requestMetaInfo><requestMetaInfo><httpMethod>POST</httpMethod><id>11</id><preRequestScript>function handleRequestParams(requestParam){
+                var salt="9sgs8d9wejwet8we";
+                var sign=requestParam.getString("sign").toLowerCase();
+                var sid=requestParam.getString("sid");
+                if (hex_md5(hex_md5(sid).toUpperCase()+salt).toLowerCase() != sign){
+                return "-1";
+                }
+                return sid;
+                }
+            </preRequestScript><preResponseScript></preResponseScript><requestContentType>BODY</requestContentType><responseContent>
+                {"retCode":"00000","tips":"请求成功","info":{"country":"武昌区","density":"3","os":"Android","city":"武汉市","timezone":"GMT+08:00","ip":"192.168.**","latitude":"30.557203","language":"zh","imsi":"8660*****56588","mac":"D8:63:***69:46","proxy":"","reslution":"1920x1080","osVersion":"7.1.2","province":"湖北省","street":"昙华林","imei":"8673****56588","model":"MI
+                5X","udid":"devicsdfsd756588-generate-cardniu","brand":"xiaomi","longitude":"114.322626"}}
+            </responseContent><responseContentType>HTML</responseContentType><url>/cardniuloan/outer/activate/user/device/info/</url></requestMetaInfo></requestMetaInfos></xmlDataBase>

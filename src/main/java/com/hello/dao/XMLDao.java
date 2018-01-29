@@ -96,7 +96,6 @@ public class XMLDao  {
                 stamp=stampedLock.writeLock();
                 recordUrl(requestMetaInfo);
                 requestMetaInfo.setId(nextIndex++);
-                requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
                 getDB().add(requestMetaInfo);
                 persistDb();
             }finally {
@@ -215,7 +214,8 @@ public class XMLDao  {
                 throw new URLNotFoundException();
             }
         }
-        RequestMetaInfo requestMetaInfo=requestMetaInfos.get(beginIndex+midleIndex);
+        midleIndex=beginIndex+midleIndex;
+        RequestMetaInfo requestMetaInfo=requestMetaInfos.get(midleIndex);
         if (requestMetaInfo.getId()<id){
             return binaryFindById(id,midleIndex+1,endIndex);
         }else if (requestMetaInfo.getId()>id){

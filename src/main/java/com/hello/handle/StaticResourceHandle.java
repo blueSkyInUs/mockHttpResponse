@@ -36,8 +36,7 @@ public class StaticResourceHandle{
     };
 
     public DefaultFullHttpResponse handle(HttpRequest request ) throws  Exception{
-        String url=UrlUniformer.adjustUrl(request.uri());
-        String resourcePath=url.substring(1);
+        String resourcePath=request.uri().substring(1);
         byte[] content=staticContents.get(resourcePath);
         if (Objects.isNull(content)){
             StringBuilder sb=new StringBuilder();
