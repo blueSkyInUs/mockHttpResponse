@@ -146,6 +146,7 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <compilerArgument>-parameters</compilerArgument>
+                    <encoding>utf-8</encoding>
                 </configuration>
             </plugin>
 

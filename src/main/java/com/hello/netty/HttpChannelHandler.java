@@ -59,7 +59,9 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
                 exception.printStackTrace();
                 Result result=new Result(ResponseType.NOTIFY,"500","系统异常","");
                 response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(result.toString().getBytes("UTF-8")));
+
             }
+            response.headers().add("Content-Type", "text/plain;charset=utf-8");
             ctx.write(response);
         }
 
