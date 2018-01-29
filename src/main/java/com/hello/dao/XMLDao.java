@@ -5,6 +5,7 @@ import com.hello.domain.RequestMetaInfoLocation;
 import com.hello.domain.XMLDataBase;
 import com.hello.exception.ResourceFobiddenAccessException;
 import com.hello.exception.URLNotFoundException;
+import com.hello.util.UrlUniformer;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -76,7 +77,11 @@ public class XMLDao  {
             log.info("already exist");
             throw  new ResourceFobiddenAccessException();
         }
-        requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
+        requestMetaInfoMap.put(UrlUniformer.adjustUrl(requestMetaInfo.getUrl()),requestMetaInfo);
+    }
+
+    private void deleteUrl(RequestMetaInfo requestMetaInfo){
+        requestMetaInfoMap.remove(UrlUniformer.adjustUrl(requestMetaInfo.getUrl()));
     }
 
 
@@ -139,7 +144,7 @@ public class XMLDao  {
             List<RequestMetaInfo> requestMetaInfos= getDB();
             RequestMetaInfoLocation requestMetaInfoLocation=binaryFindById(id,0, getDB().size()-1);
             requestMetaInfos.remove(requestMetaInfoLocation.getLocation());
-            requestMetaInfoMap.remove(requestMetaInfoLocation.getRequestMetaInfo().getUrl());
+            deleteUrl(requestMetaInfoLocation.getRequestMetaInfo());
             persistDb();
         }finally {
             if (stamp!=-1){
@@ -165,7 +170,8 @@ public class XMLDao  {
                 throw  new ResourceFobiddenAccessException();
             }
             requestMetaInfos.set(requestMetaInfoLocation.getLocation(),requestMetaInfo);
-            requestMetaInfoMap.put(requestMetaInfo.getUrl(),requestMetaInfo);
+            deleteUrl(requestMetaInfo);
+            recordUrl(requestMetaInfo);
             persistDb();
         }finally {
             if (stamp!=-1){
@@ -191,7 +197,7 @@ public class XMLDao  {
     }
 
     public RequestMetaInfo findByUrl(String url){
-        return requestMetaInfoMap.get(url);
+        return requestMetaInfoMap.get(UrlUniformer.adjustUrl(url));
     }
 
     private RequestMetaInfoLocation binaryFindById(int id, int beginIndex, int endIndex){

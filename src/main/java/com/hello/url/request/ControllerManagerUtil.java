@@ -29,8 +29,7 @@ public class ControllerManagerUtil {
     }
 
     private void addBizController(BizController bizController){
-        String url=UrlUniformer.adjustUrl(bizController.showMyAcceptUrl());
-        bizControllerMap.put(url,bizController);
+        bizControllerMap.put(bizController.showMyAcceptUrl(),bizController);
     }
 
     public BizController findBizControllerByUrl(String url){

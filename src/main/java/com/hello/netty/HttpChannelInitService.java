@@ -5,6 +5,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,7 @@ public class HttpChannelInitService extends ChannelInitializer<SocketChannel> {
         sc.pipeline().addLast(new HttpRequestDecoder());
         sc.pipeline().addLast(new HttpResponseEncoder());
         sc.pipeline().addLast(new HttpObjectAggregator(1048576));
+        sc.pipeline().addLast("http-chunked", new ChunkedWriteHandler());
         sc.pipeline().addLast(httpChannelHandler);
 
     }

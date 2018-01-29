@@ -5,6 +5,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -20,6 +21,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * @date 2018/1/8 15:00
  */
 @Component
+@Slf4j
 public class StaticResourceHandle{
 
 

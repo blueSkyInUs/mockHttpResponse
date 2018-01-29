@@ -5,6 +5,9 @@ public class UrlUniformer {
         if (!url.startsWith("/")){
             return "/"+url;
         }
+        if(!url.endsWith("/")){
+            return url+"/";
+        }
         return url;
     }
 }

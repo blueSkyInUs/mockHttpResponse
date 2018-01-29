@@ -72,7 +72,7 @@
            </div><!-- /.modal -->
        </div>
        #foreach( $requestInfo in $requestMetaInfos)
-           <li class="list-group-item"><a href="$requestInfo.id"> $requestInfo.url</a></li>
+           <li class="list-group-item"><a href="/admin/requestmeta/$requestInfo.id"> $requestInfo.url</a></li>
        #end
    </ul>
 </body>
