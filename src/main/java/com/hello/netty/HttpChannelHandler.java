@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
@@ -39,11 +41,12 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
         HttpRequest request ;
          FullHttpResponse response ;
         if (msg instanceof HttpRequest) {
+            String urlPrefix=System.getProperties().getProperty("project.url.prefix","");
             request = (HttpRequest) msg;
             log.info("url:{}",request.uri());
             if (request.uri().equals("/")){
                 response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.FOUND, Unpooled.wrappedBuffer("".getBytes("UTF-8")));
-                response.headers().add("Location","/admin/requestmeta/");
+                response.headers().add("Location",urlPrefix+"/admin/requestmeta/");
                 ctx.write(response);
                 return;
             }
@@ -87,5 +90,11 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
 
     public boolean isDynamic(String url) {
         return !url.startsWith("/static");
+    }
+
+    public static void main(String[] args) {
+        System.getProperties().entrySet().stream().forEach(entry->{
+            System.out.println(entry.getKey()+"-"+entry.getValue());
+        });
     }
 }

@@ -1,17 +1,9 @@
 <html>
-
 <head>
-#*
-    <script src="/static/js/jquery.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/static/css/bootstrap.css"></link>
-*#
-
-
     <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
     <script src="http://apps.bdimg.com/libs/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
-    <script src="/static/js/list.js"></script>
+    <script src="$url_prefix/static/js/list.js"></script>
     <meta charset="UTF-8"/>
 </head>
 <body>
@@ -79,7 +71,7 @@
            </div><!-- /.modal -->
        </div>
        #foreach( $requestInfo in $requestMetaInfos)
-           <li class="list-group-item"><a href="/admin/requestmeta/$requestInfo.id"> $requestInfo.url</a></li>
+           <li class="list-group-item"><a href="$url_prefix/admin/requestmeta/$requestInfo.id"> $requestInfo.url</a></li>
        #end
    </ul>
 </body>

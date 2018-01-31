@@ -1,14 +1,9 @@
 <html>
-
 <head>
-#*    <script src="/static/js/jquery.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css"></link>*#
     <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
     <script src="http://apps.bdimg.com/libs/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
-
-    <script src="/static/js/detailInfo.js"></script>
+    <script src="$url_prefix/static/js/detailInfo.js"></script>
     <meta charset="UTF-8"/>
 </head>
 <body>
@@ -49,7 +44,7 @@
            <li class="list-group-item">
                <div class="form-group">
                    <label for="inputfile">请求内容预处理脚本:</label>
-                   <textarea cols="50" rows="10" name="preRequestScript" >$!requestInfo.preRequestScript</textarea>
+                   <textarea cols="100" rows="10" name="preRequestScript" >$!requestInfo.preRequestScript</textarea>
                </div>
            </li>
            <li class="list-group-item">
@@ -66,18 +61,18 @@
            <li class="list-group-item">
                <div class="form-group">
                    <label for="inputfile">响应内容:</label>
-                   <textarea cols="50" rows="10" name="responseContent" >$!requestInfo.responseContent</textarea>
+                   <textarea cols="100" rows="10" name="responseContent" >$!requestInfo.responseContent</textarea>
                </div>
            </li>
            <li class="list-group-item">
                <div class="form-group">
                    <label for="inputfile">响应内容预处理脚本:</label>
-                   <textarea cols="50" rows="10" name="preResponseScript" >$!requestInfo.preResponseScript</textarea>
+                   <textarea cols="100" rows="10" name="preResponseScript" >$!requestInfo.preResponseScript</textarea>
                </div>
            </li>
            <li class="list-group-item">
-               <button id="modify" type="button" data-id="$requestInfo.id" disabled class="btn btn-default">修改</button>
-               <button id="delete" type="button" class="btn btn-default">删除</button>
+               <button id="modify" type="button" data-id="$requestInfo.id" disabled class="btn btn-default" data-url="$url_prefix/admin/requestmeta/$requestInfo.id" data-home="$url_prefix/admin/requestmeta/">修改</button>
+               <button id="delete" type="button" class="btn btn-default" data-url="$url_prefix/admin/requestmeta/$requestInfo.id" data-home="$url_prefix/admin/requestmeta/">删除</button>
            </li>
        #end
        </form>

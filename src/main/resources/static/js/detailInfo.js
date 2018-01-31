@@ -6,10 +6,10 @@ $(function(){
                      $("button#modify").removeAttr("disabled");
                 });
         $("button#modify").on("click",function(){
-              var id=$(this).attr("data-id");
+              var url=$(this).attr("data-url");
               $.ajax({
                   type: 'put',
-                  url: '',
+                  url: url,
                   data: $("form").serialize(),
                   success: function(data) {
                   data=$.parseJSON(data);
@@ -24,15 +24,16 @@ $(function(){
         });
 
         $("button#delete").on("click",function(){
-                      var id=$(this).attr("data-id");
+                      var url=$(this).attr("data-url");
+                      var home=$(this).attr("data-home");
                       $.ajax({
                           type: 'delete',
-                          url: '',
+                          url: url,
                           data: $("form").serialize(),
                           success: function(data) {
                           data=$.parseJSON(data);
                               if (data.status=='200'){
-                              window.location.href="/admin/requestmeta/";
+                              window.location.href=home;
                               }else{
                               alert(data.errorMsg);
                               }

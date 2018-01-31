@@ -39,7 +39,9 @@ public interface BizController {
           String templateFile= Objects.isNull(adminUrlMetaInfo.getId())?"template/requestMetaInfoList.vm":"template/requestMetaInfoDetail.vm";
           Template template=velocityEngine.getTemplate(templateFile,"utf-8");
           VelocityContext context = new VelocityContext();
+          String urlPrefix=System.getProperties().getProperty("project.url.prefix","");
           context.put("requestMetaInfos", JSONArray.parseArray(result.getData()));
+          context.put("url_prefix",urlPrefix);
           StringWriter stringWriter=new StringWriter();
           template.merge(context,stringWriter);
           return new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer(stringWriter.toString().getBytes("UTF-8")));
