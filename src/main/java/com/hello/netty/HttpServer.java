@@ -33,19 +33,20 @@ public class HttpServer implements ApplicationListener {
 
     @PostConstruct
     public void init(){
-        log.info("777");
         new Thread(this::bind).start();
     }
     @SneakyThrows
     public void bind()  {
-            int port=7777;
+            String port=System.getProperties().getProperty("project.port","7777");
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 1024)
                     .childHandler(httpChannelInitService).option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
-            ChannelFuture f = b.bind(port).sync();
+
+            ChannelFuture f = b.bind(Integer.parseInt(port)).sync();
+            log.info("listener port:{}",port);
             f.channel().closeFuture().sync();
     }
 

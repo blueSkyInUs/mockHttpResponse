@@ -9,7 +9,7 @@
         <file>./log/logback.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <FileNamePattern>./log/logback.%d{yyyyMMddHH}.log</FileNamePattern>
+            <FileNamePattern>./log/logback.%d{yyyyMMdd}.log</FileNamePattern>
         </rollingPolicy>
         <encoder>
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
