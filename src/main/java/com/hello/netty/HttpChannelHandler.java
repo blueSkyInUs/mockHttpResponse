@@ -17,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
@@ -44,6 +42,9 @@ public class HttpChannelHandler extends ChannelInboundHandlerAdapter {
             String urlPrefix=System.getProperties().getProperty("project.url.prefix","");
             request = (HttpRequest) msg;
             log.info("url:{}",request.uri());
+            if (request.uri().equals("/favicon.ico")){
+                return ;
+            }
             if (request.uri().equals("/")){
                 response= new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.FOUND, Unpooled.wrappedBuffer("".getBytes("UTF-8")));
                 response.headers().add("Location",urlPrefix+"/admin/requestmeta/");
