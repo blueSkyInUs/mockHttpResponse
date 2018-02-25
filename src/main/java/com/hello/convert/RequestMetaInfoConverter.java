@@ -24,6 +24,7 @@ public class RequestMetaInfoConverter {
         Map<String,Object> map= requestParamsUtil.findAllRequestParams(httpRequest);
         RequestMetaInfo requestMetaInfo= JSONObject.parseObject(new JSONObject(map).toString(),RequestMetaInfo.class);
         requestMetaInfo.setUrl(UrlUniformer.adjustUrl(requestMetaInfo.getUrl()));
+        requestMetaInfo.checkContentOk();
         return requestMetaInfo;
     }
 }

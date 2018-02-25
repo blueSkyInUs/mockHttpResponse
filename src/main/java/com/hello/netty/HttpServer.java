@@ -2,7 +2,6 @@ package com.hello.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -39,10 +38,7 @@ public class HttpServer implements ApplicationListener {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG, 1024)
-                    .childHandler(httpChannelInitService).option(ChannelOption.SO_BACKLOG, 128)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
-
+                    .childHandler(httpChannelInitService);
             ChannelFuture f = b.bind(Integer.parseInt(port)).sync();
             log.info("listener port:{}",port);
             f.channel().closeFuture().sync();
