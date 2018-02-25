@@ -53,6 +53,7 @@ public class XMLDao  {
         }
 
         File file=new File(parentPath+"db.xml");
+        System.out.println(file.getPath());
         if (!file.exists()){
             file.createNewFile();
         }

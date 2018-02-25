@@ -76,6 +76,8 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-transport</artifactId>
             <version>4.1.17.Final</version>
+            <scope>system</scope>
+            <systemPath>/Users/lesson/Desktop/netty-transport-4.1.17.Final.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
