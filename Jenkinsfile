@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('load') {
       steps {
-        sh 'git pull'
+        sh 'git pull master master'
       }
     }
     stage('compile') {
