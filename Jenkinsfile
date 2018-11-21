@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('load') {
       steps {
-        sh 'git pull master master'
+        sh 'git branch --set-upstream-to=origin/master master && git pull '
       }
     }
     stage('compile') {
