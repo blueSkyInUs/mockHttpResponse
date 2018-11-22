@@ -13,7 +13,7 @@ pipeline {
     }
     stage('run') {
       steps {
-        sh 'java -jar1 target/mock-1.0-SNAPSHOT.jar'
+        sh 'java -jar target/mock-1.0-SNAPSHOT.jar'
       }
     }
   }
